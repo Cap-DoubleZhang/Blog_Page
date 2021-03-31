@@ -35,6 +35,18 @@ export const constantRoutes = [{
             name: 'Dashboard',
             meta: { title: 'dashboard', icon: 'dashboard', affix: true }
         }]
+    },
+    {
+        path: '/',
+        component: Layout,
+        redirect: '/sysuser',
+        children: [{
+            path: 'sysuser',
+            component: () =>
+                import ('@/views/sys-user/index'),
+            name: '用户管理',
+            meta: { title: '用户管理', icon: 'dashboard' }
+        }]
     }
 ]
 
