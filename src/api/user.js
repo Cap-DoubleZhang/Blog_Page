@@ -22,9 +22,9 @@ export function logout() {
     })
 }
 
-export function getList() {
+export function getUsers() {
     return request({
-        url: 'user/lists',
-        method: 'post'
+        url: 'user/users',
+        method: 'get'
     })
 }
