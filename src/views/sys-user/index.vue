@@ -24,7 +24,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="100">
+      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -77,39 +77,47 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item :label="$t('table.type')" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
+        <el-form-item label="用户名" prop="用户名" class="filter-item">
+          <el-input v-model="temp.userLoginName" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item :label="$t('table.date')" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+        <el-form-item label="昵称">
+          <el-input v-model="temp.userShowName" placeholder="请输入昵称" />
         </el-form-item>
-        <el-form-item :label="$t('table.title')" prop="title">
-          <el-input v-model="temp.title" />
+        <el-form-item label="头像">
+          <el-button size="small" type="primary">点击上传头像</el-button>
         </el-form-item>
-        <el-form-item :label="$t('table.status')">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
+        <el-form-item label="手机号码">
+          <el-input v-model="temp.phone" placeholder="请输入手机号码" />
         </el-form-item>
-        <el-form-item :label="$t('table.importance')">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
+        <el-form-item label="邮箱">
+          <el-input v-model="temp.eMail" placeholder="请输入邮箱" />
         </el-form-item>
-        <el-form-item :label="$t('table.remark')">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+        <el-form-item label="出生日期">
+          <el-date-picker v-model="temp.birthDate" type="date" placeholder="请选择出生日期" style="width:100%;" />
+        </el-form-item>
+        <el-form-item label="身份证号" prop="身份证号" >
+          <el-input v-model="temp.idCard" placeholder="请输入身份证号" />
+        </el-form-item>
+        <el-form-item label="QQ" prop="QQ" >
+          <el-input v-model="temp.qq" placeholder="请输入QQ" />
+        </el-form-item>
+        <el-form-item label="微信" prop="微信" >
+          <el-input v-model="temp.weChat" placeholder="请输入微信" />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="temp.descripts" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          {{ $t('table.cancel') }}
+          关闭
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          {{ $t('table.confirm') }}
+          确认
         </el-button>
       </div>
     </el-dialog>
@@ -127,7 +135,7 @@
 </template>
 <script>
 // import { defineComponent } from '@vue/composition-api'
- import { getUsers } from '@/api/user'
+ import { getUsers,createUser,deleteUser } from '@/api/user'
  import waves from '@/directive/waves' // waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -167,31 +175,35 @@ export default {
       listQuery: {
         pageIndex: 1,
         pageSize: 10,
-        keyWord: undefined
+        keyWord: ''
       },
       calendarTypeOptions,
       showReviewer: false,
       temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        id: 0,
+        userLoginName: '',
+        userShowName: '',
+        headPortrait: '',
+        phone: '',
+        eMail: '',
+        birthDate: new Date(),
+        idCard: '',
+        qq: '',
+        weChat: '',
+        descripts: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑用户',
+        create: '创建用户'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'change' }],
+        birthDate: [{ type: 'date', required: true, message: '出生日期不可为空.', trigger: 'change' }],
+        userShowName: [{ required: true, message: '昵称不可为空.', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -209,16 +221,16 @@ export default {
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 1.5 * 1000)
+        },1 * 1000)
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
+      this.listQuery.pageIndex = 1
       this.getList()
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: '操作Success',
+        message: '操作成功',
         type: 'success'
       })
       row.status = status
@@ -245,18 +257,15 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          // createArticle(this.temp).then(() => {
-          //   this.list.unshift(this.temp)
-          //   this.dialogFormVisible = false
-          //   this.$notify({
-          //     title: 'Success',
-          //     message: 'Created Successfully',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          // })
+          createUser(this.temp).then(() => {
+            this.getList()
+            this.dialogFormVisible = false
+            this.$notify({
+              message: '操作成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
         }
       })
     },
@@ -289,13 +298,10 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+      this.$confirm(`你确定删除 ${row.userLoginName} 吗？`,'提示',{
+        
       })
-      this.list.splice(index, 1)
+      
     },
     handleFetchPv(pv) {
       // fetchPv(pv).then(response => {

@@ -37,15 +37,20 @@ export const constantRoutes = [{
         }]
     },
     {
-        path: '/',
+        path: '/system',
         component: Layout,
-        redirect: '/sysuser',
+        redirect: '/system/users',
+        alwaysShow: true,
+        meta: {
+            title: '系统管理',
+            icon: 'el-icon-s-tools'
+        },
         children: [{
-            path: 'sysuser',
+            path: 'users',
             component: () =>
                 import ('@/views/sys-user/index'),
             name: '用户管理',
-            meta: { title: '用户管理', icon: 'dashboard' }
+            meta: { title: '用户管理', icon: 'el-icon-user-solid' }
         }]
     }
 ]

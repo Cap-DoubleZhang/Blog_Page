@@ -22,9 +22,26 @@ export function logout() {
     })
 }
 
-export function getUsers() {
+export function getUsers(query) {
     return request({
         url: 'user/users',
-        method: 'get'
+        method: 'get',
+        params: query
+    })
+}
+
+export function createUser(data) {
+    return request({
+        url: 'user/user',
+        method: 'post',
+        data
+    })
+}
+
+export function deleteUser(data) {
+    return request({
+        url: 'user/user',
+        method: 'delete',
+        data
     })
 }
