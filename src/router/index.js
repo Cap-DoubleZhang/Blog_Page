@@ -51,6 +51,19 @@ export const constantRoutes = [{
                 import ('@/views/sys-user/index'),
             name: '用户管理',
             meta: { title: '用户管理', icon: 'el-icon-user-solid' }
+        }, {
+            path: 'roles',
+            component: () =>
+                import ('@/views/sys-role/index'),
+            name: '角色管理',
+            meta: { title: '角色管理', icon: 'el-icon-location-outline' }
+        }, {
+            path: 'userinfo',
+            hidden: true,
+            component: () =>
+                import ('@/views/sys-user/userinfo'),
+            name: '用户信息',
+            meta: { title: '用户信息', icon: 'el-icon-location-outline' }
         }]
     }
 ]

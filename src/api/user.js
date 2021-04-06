@@ -15,6 +15,13 @@ export function getInfo() {
     })
 }
 
+export function getUserInfo() {
+    return request({
+        url: 'user/userinfo',
+        method: 'get'
+    })
+}
+
 export function logout() {
     return request({
         url: 'user/logout',
@@ -30,7 +37,7 @@ export function getUsers(query) {
     })
 }
 
-export function createUser(data) {
+export function saveUser(data) {
     return request({
         url: 'user/user',
         method: 'post',
@@ -42,6 +49,22 @@ export function deleteUser(data) {
     return request({
         url: 'user/user',
         method: 'delete',
+        data
+    })
+}
+
+export function updateUserIsUse(data) {
+    return request({
+        url: 'user/userIsUse',
+        method: 'put',
+        data
+    })
+}
+
+export function updateUserPassword(data) {
+    return request({
+        url: 'user/userpassword',
+        method: 'put',
         data
     })
 }
