@@ -64,6 +64,12 @@ export const constantRoutes = [{
                 import ('@/views/sys-user/userinfo'),
             name: '用户信息',
             meta: { title: '用户信息', icon: 'el-icon-location-outline' }
+        }, {
+            path: 'menus',
+            component: () =>
+                import ('@/views/sys-menu/index'),
+            name: '菜单管理',
+            meta: { title: '菜单管理', icon: 'el-icon-menu' }
         }]
     }
 ]

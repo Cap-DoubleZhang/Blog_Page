@@ -25,16 +25,47 @@
 
       <el-col :span="18" :xs="24">
         <el-card>
-          <el-tabs v-model="Activity">
-            <el-tab-pane label="Activity" name="activity">
+          <el-tabs v-model="activeTab">
+            <el-tab-pane label="更改密码" name="updatePassword">
               <div class="user-activity">
-                <div class="box-center">
-                  <el-form ref="dataForm" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-                    <el-form-item label="角色名">
-                      <el-input placeholder="请输入角色名" />
+                <div class="box-center" style="width:100%;">
+                  <el-form ref="dataForm" label-position="right" label-width="90px" style="width: 85%; margin-left:50px;">
+                    <el-form-item label="原密码">
+                      <el-input v-model="password.oldPassword" show-password placeholder="请输入原密码" />
                     </el-form-item>
-                    <el-form-item label="描述">
-                      <el-input :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
+                    <el-form-item label="新密码">
+                      <el-input v-model="password.newPassword" show-password placeholder="请输入新密码" />
+                    </el-form-item>
+                    <el-form-item label="确认新密码">
+                      <el-input v-model="password.reNewPassword" show-password placeholder="请输入确认新密码" />
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="updatePassword()">
+                        确认保存
+                      </el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="更改头像" name="updateHeadPortrait">
+              <div class="user-activity">
+                <div class="box-center" style="width:100%;">
+                  <el-form ref="dataForm" label-position="right" label-width="90px" style="width: 85%; margin-left:50px;">
+                    <el-form-item>
+                      <el-upload
+                        class="avatar-uploader"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :show-file-list="false"
+                      >
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon" />
+                      </el-upload>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="uploadHeadPortrait()">
+                        确认更改
+                      </el-button>
                     </el-form-item>
                   </el-form>
                 </div>
@@ -48,7 +79,7 @@
 </template>
 <script>
 import PanThumb from '@/components/PanThumb'
-import { getUserInfo } from '@/api/user'
+import { getUserInfo, updateUserPassword } from '@/api/user'
 
 export default {
   components: { PanThumb },
@@ -60,7 +91,13 @@ export default {
         headPortrait: '',
         introduction: ''
       },
-      activeTab: 'activity'
+      password: {
+        oldPassword: '',
+        newPassword: '',
+        reNewPaswword: ''
+      },
+      activeTab: 'updatePassword',
+      imageUrl: ''
     }
   },
   created() {
@@ -70,6 +107,20 @@ export default {
     getUser() {
       getUserInfo().then(response => {
           this.user = response.data
+      })
+    },
+    updatePassword() {
+      updateUserPassword(this.password).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.password = {
+          oldPassword: '',
+          newPassword: '',
+          reNewPaswword: ''
+        }
       })
     }
   }
@@ -133,4 +184,28 @@ export default {
     }
   }
 }
+
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

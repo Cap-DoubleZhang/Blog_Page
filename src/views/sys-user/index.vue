@@ -20,6 +20,7 @@
       highlight-current-row
       style="width: 100%;"
     >
+      <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
@@ -151,10 +152,10 @@
           <el-input v-model="resetPasswordTemp.userLoginName" placeholder="请输入用户名" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
         <el-form-item label="新密码">
-          <el-input v-model="resetPasswordTemp.newPassword" placeholder="请输入新密码" />
+          <el-input v-model="resetPasswordTemp.newPassword" show-password placeholder="请输入新密码" />
         </el-form-item>
         <el-form-item label="确认密码">
-          <el-input v-model="resetPasswordTemp.reNewPassword" placeholder="请输入确认密码" />
+          <el-input v-model="resetPasswordTemp.reNewPassword" show-password placeholder="请输入确认密码" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -171,7 +172,7 @@
 </template>
 <script>
 // import { defineComponent } from '@vue/composition-api'
- import { getUsers, saveUser, deleteUser, updateUserIsUse, updateUserPassword } from '@/api/user'
+ import { getUsers, saveUser, deleteUser, updateUserIsUse, resetUserPassword } from '@/api/user'
  import waves from '@/directive/waves' // waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -364,7 +365,7 @@ export default {
        })
     },
     updateUserNewPassword() {
-      updateUserPassword(this.resetPasswordTemp).then(() => {
+      resetUserPassword(this.resetPasswordTemp).then(() => {
         this.dialogResetPasswordVisible = false
         this.$message({
           message: '重置成功.',

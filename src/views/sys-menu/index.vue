@@ -25,21 +25,14 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色名" min-width="120px">
+      <el-table-column label="菜单名" min-width="120px">
         <template slot-scope="{row}">
-          <span>{{ row.roleName }}</span>
+          <span>{{ row.menuName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否为管理员" width="110" align="center">
+      <el-table-column label="菜单名" min-width="120px">
         <template slot-scope="{row}">
-          <el-switch
-            slot="reference"
-            v-model="row.adminFlag"
-            :active-value="1"
-            :inactive-value="0"
-            active-color="#13ce66"
-            @change="updateRoleAdmin($event,row)"
-          />
+          <span>{{ row.menuName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="禁用状态" width="100" align="center">
@@ -52,11 +45,6 @@
             active-color="#13ce66"
             @change="updateRoleUse($event,row)"
           />
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" min-width="120px">
-        <template slot-scope="{row}">
-          <span>{{ row.roleDesc }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">
@@ -81,12 +69,38 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="角色名">
-          <el-input v-model="temp.roleName" placeholder="请输入角色名" :disabled="dialogStatus==='create'?false:true" />
+        <el-form-item label="菜单名称">
+          <el-input v-model="temp.menuName" placeholder="请输入菜单名称" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
-        <el-form-item label="管理员">
+        <el-form-item label="菜单编码">
+          <el-input v-model="temp.menuCode" placeholder="请输入菜单编码" />
+        </el-form-item>
+        <el-form-item label="菜单图标">
+          <e-icon-picker v-model="temp.menuIcon" />
+        </el-form-item>
+        <el-form-item label="菜单标题">
+          <el-input v-model="temp.menuTitle" placeholder="请输入菜单标题" />
+        </el-form-item>
+        <el-form-item label="上级菜单">
+          <el-input v-model="temp.parentModuleID" placeholder="请选择上级菜单" />
+        </el-form-item>
+        <el-form-item label="菜单路径">
+          <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
+        </el-form-item>
+        <el-form-item label="菜单排序">
+          <el-input v-model="temp.sortIndex" placeholder="请输入菜单排序" />
+        </el-form-item>
+        <el-form-item label="禁用状态">
           <el-switch
-            v-model="temp.adminFlag"
+            v-model="temp.isUse"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#13ce66"
+          />
+        </el-form-item>
+        <el-form-item label="菜单类型">
+          <el-switch
+            v-model="temp.menuType"
             :active-value="1"
             :inactive-value="0"
             active-color="#13ce66"
@@ -109,7 +123,7 @@
   </div>
 </template>
 <script>
- import { getRoles, saveRole, deleteRole, updateRoleIsUse, updateRoleAdminFlag } from '@/api/role'
+ import { getMenus, saveMenu, deleteMenu, updateMenuIsUse } from '@/api/menu'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -136,16 +150,19 @@ export default {
       listQuery: {
         pageIndex: 1,
         pageSize: 10,
-        keyWord: '',
-        adminFlag: -1,
-        isUse: -1
+        keyWord: ''
       },
       temp: {
         id: 0,
-        roleName: '',
-        roleDesc: '',
-        adminFlag: 0,
-        isUse: 0
+        menuName: '',
+        menuCode: '',
+        menuIcon: '',
+        menuTitle: '',
+        parentModuleID: '',
+        menuPath: '',
+        sortIndex: 0,
+        isUse: 0,
+        menuType: 0
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -167,7 +184,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getRoles(this.listQuery).then(response => {
+      getMenus(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.totalCount
 
@@ -200,7 +217,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          saveRole(this.temp).then(() => {
+          saveMenu(this.temp).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$message({
@@ -224,7 +241,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          saveRole(tempData).then(() => {
+          saveMenu(tempData).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$message({
@@ -248,7 +265,7 @@ export default {
       const arr = []
         arr.push(row.id)
       this.$confirm(messgae, '提示', {}).then(() => {
-          updateRoleIsUse({ ids: arr, isUse: $event }).then(() => {
+          updateMenuIsUse({ ids: arr, isUse: $event }).then(() => {
             if ($event === 1) {
               row.isUse = 1
             } else if ($event === 0) {
@@ -265,36 +282,11 @@ export default {
         const arr = []
         arr.push(row.id)
        this.$confirm(`你确定删除 ${row.roleName} 吗？`, '提示', {}).then(() => {
-          deleteRole({ ids: arr }).then(() => {
+          deleteMenu({ ids: arr }).then(() => {
             this.getList()
             this.dialogFormVisible = false
             this.$message({
               message: '删除成功.',
-              type: 'success'
-            })
-          })
-       })
-    },
-    updateRoleAdmin($event, row) {
-      let messgae = ''
-      if ($event === 1) {
-        messgae = `你确定启用 ${row.roleName} 成为管理员吗？`
-        row.adminFlag = 0
-      } else if ($event === 0) {
-        messgae = `你确定禁用 ${row.roleName} 成为管理员吗？`
-        row.adminFlag = 1
-      }
-      const arr = []
-        arr.push(row.id)
-      this.$confirm(messgae, '提示', {}).then(() => {
-          updateRoleAdminFlag({ ids: arr, adminFlag: $event }).then(() => {
-            if ($event === 1) {
-              row.adminFlag = 1
-            } else if ($event === 0) {
-              row.adminFlag = 0
-            }
-            this.$message({
-              message: '更改成功.',
               type: 'success'
             })
           })
