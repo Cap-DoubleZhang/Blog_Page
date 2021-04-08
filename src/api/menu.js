@@ -18,6 +18,15 @@ export function getMenus(query) {
     })
 }
 
+// 获取所有的菜单列表
+export function getAllMenus(query) {
+    return request({
+        url: 'menu/allMenus',
+        method: 'get',
+        params: query
+    })
+}
+
 // 新增/编辑菜单信息
 export function saveMenu(data) {
     return request({
@@ -36,7 +45,7 @@ export function deleteMenu(data) {
     })
 }
 
-// 更改用户禁用状态
+// 更改菜单禁用状态
 export function updateMenuIsUse(data) {
     return request({
         url: 'menu/menuIsUse',

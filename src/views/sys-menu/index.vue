@@ -18,9 +18,12 @@
       border
       fit
       style="width: 100%;"
+      row-key="id"
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
+      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="auto">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -30,9 +33,19 @@
           <span>{{ row.menuName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="菜单名" min-width="120px">
+      <el-table-column label="菜单编码" min-width="120px">
         <template slot-scope="{row}">
-          <span>{{ row.menuName }}</span>
+          <span>{{ row.menuCode }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="排序" min-width="20">
+        <template slot-scope="{row}">
+          <span>{{ row.sortIndex }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="菜单状态" width="100" align="center">
+        <template slot-scope="{row}">
+          <el-tag :class="{ 'el-tag--info':row.menuType==1 }">{{ row.menuType==0?"菜单":"按钮" }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="禁用状态" width="100" align="center">
@@ -70,10 +83,10 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
         <el-form-item label="菜单名称">
-          <el-input v-model="temp.menuName" placeholder="请输入菜单名称" :disabled="dialogStatus==='create'?false:true" />
+          <el-input v-model="temp.menuName" placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单编码">
-          <el-input v-model="temp.menuCode" placeholder="请输入菜单编码" />
+          <el-input v-model="temp.menuCode" placeholder="请输入菜单编码" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
         <el-form-item label="菜单图标">
           <e-icon-picker v-model="temp.menuIcon" />
@@ -82,13 +95,20 @@
           <el-input v-model="temp.menuTitle" placeholder="请输入菜单标题" />
         </el-form-item>
         <el-form-item label="上级菜单">
-          <el-input v-model="temp.parentModuleID" placeholder="请选择上级菜单" />
+          <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.menuName"
+              :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="菜单路径">
           <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
         </el-form-item>
         <el-form-item label="菜单排序">
-          <el-input v-model="temp.sortIndex" placeholder="请输入菜单排序" />
+          <el-input-number v-model="temp.sortIndex" />
         </el-form-item>
         <el-form-item label="禁用状态">
           <el-switch
@@ -106,9 +126,6 @@
             active-color="#13ce66"
           />
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="temp.roleDesc" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -123,7 +140,7 @@
   </div>
 </template>
 <script>
- import { getMenus, saveMenu, deleteMenu, updateMenuIsUse } from '@/api/menu'
+ import { getMenus, saveMenu, deleteMenu, updateMenuIsUse, getAllMenus } from '@/api/menu'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -131,16 +148,6 @@ export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       tableKey: 0,
@@ -158,7 +165,7 @@ export default {
         menuCode: '',
         menuIcon: '',
         menuTitle: '',
-        parentModuleID: '',
+        parentModuleID: 0,
         menuPath: '',
         sortIndex: 0,
         isUse: 0,
@@ -167,19 +174,22 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑角色',
-        create: '创建角色'
+        update: '编辑菜单',
+        create: '创建菜单'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
         roleName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      options: null,
+      keyWord: ''
     }
   },
   created() {
     this.getList()
+    this.getAllList()
   },
   methods: {
     getList() {
@@ -193,6 +203,11 @@ export default {
         }, 1 * 1000)
       })
     },
+    getAllList() {
+      getAllMenus({ keyWord: this.keyWord }).then(response => {
+        this.options = Object.assign({}, response.data)
+      })
+    },
     handleFilter() {
       this.listQuery.pageIndex = 1
       this.getList()
@@ -200,10 +215,15 @@ export default {
     resetTemp() {
       this.temp = {
         id: 0,
-        roleName: '',
-        roleDesc: '',
-        adminFlag: 0,
-        isUse: 0
+        menuName: '',
+        menuCode: '',
+        menuIcon: '',
+        menuTitle: '',
+        parentModuleID: 0,
+        menuPath: '',
+        sortIndex: 0,
+        isUse: 0,
+        menuType: 0
       }
     },
     handleCreate() {
@@ -253,13 +273,16 @@ export default {
         }
       })
     },
+    handleChange(value) {
+        console.log(value)
+    },
     updateRoleUse($event, row) {
       let messgae = ''
       if ($event === 1) {
-        messgae = `你确定禁用 ${row.roleName} 吗？`
+        messgae = `你确定禁用 ${row.menuName} 吗？`
         row.isUse = 0
       } else if ($event === 0) {
-        messgae = `你确定启用 ${row.roleName} 吗？`
+        messgae = `你确定启用 ${row.menuName} 吗？`
         row.isUse = 1
       }
       const arr = []
@@ -281,7 +304,7 @@ export default {
     handleDelete(row) {
         const arr = []
         arr.push(row.id)
-       this.$confirm(`你确定删除 ${row.roleName} 吗？`, '提示', {}).then(() => {
+       this.$confirm(`你确定删除 ${row.menuName} 吗？`, '提示', {}).then(() => {
           deleteMenu({ ids: arr }).then(() => {
             this.getList()
             this.dialogFormVisible = false
