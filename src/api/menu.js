@@ -1,14 +1,5 @@
 import request from '@/utils/request'
 
-// 用户登录
-export function login(data) {
-    return request({
-        url: 'user/login',
-        method: 'post',
-        data
-    })
-}
-
 // 获取菜单列表
 export function getMenus(query) {
     return request({

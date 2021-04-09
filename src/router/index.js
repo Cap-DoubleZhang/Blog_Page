@@ -48,7 +48,7 @@ export const constantRoutes = [{
         children: [{
             path: 'users',
             component: () =>
-                import ('@/views/sys-user/index'),
+                import ('@/views/sys/user'),
             name: '用户管理',
             meta: { title: '用户管理', icon: 'el-icon-user-solid' }
         }, {
@@ -61,7 +61,7 @@ export const constantRoutes = [{
             path: 'userinfo',
             hidden: true,
             component: () =>
-                import ('@/views/sys-user/userinfo'),
+                import ('@/views/sys/userinfo'),
             name: '用户信息',
             meta: { title: '用户信息', icon: 'el-icon-location-outline' }
         }, {
@@ -70,6 +70,12 @@ export const constantRoutes = [{
                 import ('@/views/sys-menu/index'),
             name: '菜单管理',
             meta: { title: '菜单管理', icon: 'el-icon-menu' }
+        }, {
+            path: 'dictionary',
+            component: () =>
+                import ('@/views/sys/dictionary'),
+            name: '字典管理',
+            meta: { title: '字典管理' }
         }]
     }
 ]
