@@ -54,7 +54,7 @@ export const constantRoutes = [{
         }, {
             path: 'roles',
             component: () =>
-                import ('@/views/sys-role/index'),
+                import ('@/views/sys/role'),
             name: '角色管理',
             meta: { title: '角色管理', icon: 'el-icon-location-outline' }
         }, {
@@ -67,7 +67,7 @@ export const constantRoutes = [{
         }, {
             path: 'menus',
             component: () =>
-                import ('@/views/sys-menu/index'),
+                import ('@/views/sys/menu'),
             name: '菜单管理',
             meta: { title: '菜单管理', icon: 'el-icon-menu' }
         }, {

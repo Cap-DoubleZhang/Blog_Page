@@ -26,3 +26,30 @@ export function deleteDictionary(data) {
         data
     })
 }
+
+// 获取字典明细列表
+export function getDictionariesDetail(query) {
+    return request({
+        url: 'dictionary/dictionariesDetail',
+        method: 'get',
+        params: query
+    })
+}
+
+// 新增/编辑字典明细信息
+export function saveDictionaryDetail(data) {
+    return request({
+        url: 'dictionary/dictionaryDetail',
+        method: 'post',
+        data
+    })
+}
+
+// 删除字典明细
+export function deleteDictionaryDetail(data) {
+    return request({
+        url: 'dictionary/dictionaryDetail',
+        method: 'delete',
+        data
+    })
+}
