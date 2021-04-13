@@ -174,7 +174,7 @@
   </div>
 </template>
 <script>
- import { getDictionaries, saveDictionary, deleteDictionary, getDictionariesDetail, saveDictionaryDetail } from '@/api/dictionary'
+ import { getDictionaries, saveDictionary, deleteDictionary, getDictionariesDetail, saveDictionaryDetail, deleteDictionaryDetail } from '@/api/dictionary'
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
@@ -318,8 +318,8 @@ export default {
     },
     handleDetailUpdate(row) {
       this.tempDetail = row
-      this.dialogDetailStatus = 'update'
-      this.dialogDetailFormVisible = true
+      this.dialogDetailInfoStatus = 'update'
+      this.dialogDetailInfoFormVisible = true
     },
     handleDetailShow(row) {
       this.detailCode = row.code
@@ -377,6 +377,20 @@ export default {
           })
         }
       })
+    },
+    handleDetailDelete(row) {
+        const arr = []
+        arr.push(row.id)
+       this.$confirm(`你确定删除 ${row.value} 吗？`, '提示', {}).then(() => {
+          deleteDictionaryDetail({ ids: arr }).then(() => {
+            this.getDetailList()
+            this.dialogDetailInfoFormVisible = false
+            this.$message({
+              message: '删除成功.',
+              type: 'success'
+            })
+          })
+       })
     }
   }
 }

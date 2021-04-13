@@ -39,7 +39,7 @@ export const constantRoutes = [{
     {
         path: '/system',
         component: Layout,
-        redirect: '/system/users',
+        redirect: 'noRedirect',
         alwaysShow: true,
         meta: {
             title: '系统管理',
@@ -76,6 +76,23 @@ export const constantRoutes = [{
                 import ('@/views/sys/dictionary'),
             name: '字典管理',
             meta: { title: '字典管理' }
+        }]
+    },
+    {
+        path: '/blog',
+        component: Layout,
+        redirect: 'noRedirect',
+        alwaysShow: true,
+        meta: {
+            title: '博客管理',
+            icon: 'el-icon-s-tools'
+        },
+        children: [{
+            path: 'blog',
+            component: () =>
+                import ('@/views/blog/blog'),
+            name: '博客管理',
+            meta: { title: '博客管理', icon: 'el-icon-user-solid' }
         }]
     }
 ]
