@@ -39,3 +39,11 @@ export function deleteRole(data) {
     data
   })
 }
+
+export function getUserRoles(data) {
+  return request({
+    url: `userRoles/userRoles`,
+    method: 'get',
+    data
+  })
+}

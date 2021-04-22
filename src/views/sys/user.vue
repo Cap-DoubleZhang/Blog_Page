@@ -1,15 +1,16 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
-      &nbsp;
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        新增
-      </el-button>
-    </div>
+    <el-row type="flex" justify="end" class="filter-container">
+      <el-input v-model="listQuery.keyWord" prefix-icon="el-icon-search" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
+      <el-button-group style="margin-left:10px;">
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+          查询
+        </el-button>
+        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+          新增
+        </el-button>
+      </el-button-group>
+    </el-row>
 
     <el-table
       :key="tableKey"
@@ -86,10 +87,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="310" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
+          </el-button>
+          <el-button type="primary" size="mini" @click="assignRoles(row)">
+            分配角色
           </el-button>
           <el-button type="primary" size="mini" @click="handleResetPassword(row)">
             重置密码
@@ -168,11 +172,48 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="分配角色" :visible.sync="dialogUserRoleVisible" style="margin-top:-100px;">
+      <el-table
+        ref="userRolesDataList"
+        :key="tableKey"
+        v-loading="listLoading"
+        :data="userRolesData"
+        border
+        style="width: 100%;"
+      >
+        <el-table-column type="selection" width="55" align="center" :reserve-selection="selectable" />
+        <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
+          <template slot-scope="{row}">
+            <span>{{ row.id }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="角色名" min-width="120px">
+          <template slot-scope="{row}">
+            <span>{{ row.roleName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="角色描述" min-width="120px">
+          <template slot-scope="{row}">
+            <span>{{ row.roleDesc }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogUserRoleVisible = false">
+          关闭
+        </el-button>
+        <el-button type="primary" @click="saveUserRoles">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
 // import { defineComponent } from '@vue/composition-api'
  import { getUsers, saveUser, deleteUser, updateUserIsUse, resetUserPassword } from '@/api/user'
+ import { getUserRoles, saveUserRoles } from '@/api/system/userrole'
  import waves from '@/directive/waves' // waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -201,6 +242,9 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         keyWord: ''
+      },
+      listUserRolesQuery: {
+        id: 0
       },
       temp: {
         id: 0,
@@ -234,7 +278,17 @@ export default {
         userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
         userShowName: [{ required: true, message: '昵称不可为空.', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      dialogUserRoleVisible: false,
+      userRoles: {
+        id: 0,
+        roleIds: []
+      },
+      userRolesData: {
+        id: 0,
+        roleName: '',
+        promiss: false
+      }
     }
   },
   created() {
@@ -369,6 +423,36 @@ export default {
         this.dialogResetPasswordVisible = false
         this.$message({
           message: '重置成功.',
+          type: 'success'
+        })
+      })
+    },
+    getUserRolesList() {
+      getUserRoles(this.listUserRolesQuery).then(response => {
+        this.$nextTick(() => {
+          this.userRolesData = response.data
+          this.userRolesData.forEach(
+            o => this.$refs.userRolesDataList.toggleRowSelection(o, true)
+          )
+        })
+      })
+    },
+    assignRoles(row) {
+      this.dialogUserRoleVisible = true
+      this.listUserRolesQuery = row.id
+      this.userRoles.id = row.id
+      this.getUserRolesList()
+    },
+    saveUserRoles() {
+      const roleIds = []
+      this.$refs.userRolesDataList.selection.forEach(a => {
+        roleIds.push(a.id)
+      })
+     this.userRoles.roleIds = roleIds
+      saveUserRoles(this.userRoles).then(() => {
+        this.dialogUserRoleVisible = false
+        this.$message({
+          message: '操作成功.',
           type: 'success'
         })
       })

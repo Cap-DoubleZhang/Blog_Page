@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 获取字典列表
+// 获取博客列表
 export function getBlogs(query) {
     return request({
         url: 'blog/blogs',
@@ -9,7 +9,7 @@ export function getBlogs(query) {
     })
 }
 
-// 新增/编辑字典信息
+// 新增/编辑博客信息
 export function saveBlog(data) {
     return request({
         url: 'blog/blog',
@@ -18,7 +18,7 @@ export function saveBlog(data) {
     })
 }
 
-// 删除字典
+// 删除博客
 export function deleteBlog(data) {
     return request({
         url: 'blog/blog',
@@ -33,5 +33,14 @@ export function updateBlogPublishType(data) {
         url: 'blog/blogPublishType',
         method: 'put',
         data
+    })
+}
+
+// 获取博客评论列表
+export function getBlogComments(query) {
+    return request({
+        url: 'comment/blogComments',
+        method: 'get',
+        params: query
     })
 }

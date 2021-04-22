@@ -1,15 +1,16 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
-      &nbsp;
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        新增
-      </el-button>
-    </div>
+    <el-row type="flex" justify="end" class="filter-container">
+      <el-input v-model="listQuery.keyWord" prefix-icon="el-icon-search" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
+      <el-button-group style="margin-left:10px;">
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+          查询
+        </el-button>
+        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+          新增
+        </el-button>
+      </el-button-group>
+    </el-row>
 
     <el-table
       :key="tableKey"

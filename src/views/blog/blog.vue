@@ -1,15 +1,16 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
-      &nbsp;
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        新增
-      </el-button>
-    </div>
+    <el-row type="flex" justify="end" class="filter-container">
+      <el-input v-model="listQuery.keyWord" prefix-icon="el-icon-search" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
+      <el-button-group style="margin-left:10px;">
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+          查询
+        </el-button>
+        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+          新增
+        </el-button>
+      </el-button-group>
+    </el-row>
 
     <el-table
       :key="tableKey"
@@ -64,6 +65,9 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
+          <el-button type="primary" size="mini" @click="handleCommentShow(row)">
+            评论列表
+          </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
@@ -115,11 +119,47 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="commmentListTitle" :visible.sync="dialogCommentFormVisible" style="margin-top:-100px;">
+      <div class="filter-container">
+        <el-input v-model="listCommentQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
+        &nbsp;
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleCommentFilter">
+          查询
+        </el-button>
+      </div>
+      <el-table
+        v-loading="listLoading"
+        :data="listComment"
+        border
+        fit
+        style="width: 100%;"
+      >
+        <el-table-column label="评论内容" min-width="80">
+          <template slot-scope="{row}">
+            <span>{{ row.value }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" width="160px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.createdTime }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" align="center" width="70" class-name="small-padding fixed-width">
+          <template slot-scope="{row}">
+            <el-button size="mini" type="danger" @click="handleCommentDelete(row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="totalComment>0" :total="totalComment" :page.sync="listCommentQuery.pageIndex" :limit.sync="listCommentQuery.pageSize" @pagination="getCommentList" />
+    </el-dialog>
   </div>
 </template>
 <script>
 // import { defineComponent } from '@vue/composition-api'
- import { getBlogs, saveBlog, deleteBlog, updateBlogPublishType } from '@/api/blog/blog'
+ import { getBlogs, saveBlog, deleteBlog, updateBlogPublishType, getBlogComments } from '@/api/blog/blog'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -172,7 +212,18 @@ export default {
         userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
         userShowName: [{ required: true, message: '昵称不可为空.', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      listComment: null,
+      totalComment: 0,
+      blogId: 0,
+      commmentListTitle: '',
+      dialogCommentFormVisible: false,
+      listCommentQuery: {
+        pageIndex: 1,
+        pageSize: 10,
+        keyWord: '',
+        blogId: 0
+      }
     }
   },
   created() {
@@ -184,6 +235,17 @@ export default {
       getBlogs(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.totalCount
+
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1 * 1000)
+      })
+    },
+    getCommentList() {
+      this.listLoading = true
+      getBlogComments(this.listQuery).then(response => {
+        this.listComment = response.data.items
+        this.totalComment = response.data.totalCount
 
         setTimeout(() => {
           this.listLoading = false
@@ -229,6 +291,18 @@ export default {
           })
         }
       })
+    },
+    handleCommentShow(row) {
+      this.commmentListTitle = `<${row.title}>评论列表`
+      this.dialogCommentFormVisible = true
+      this.blogId = row.id
+      this.listDetailQuery = {
+        pageIndex: 1,
+        pageSize: 10,
+        keyWord: '',
+        blogId: this.blogId
+      }
+      this.getCommentList()
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
