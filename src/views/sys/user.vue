@@ -65,11 +65,6 @@
       </el-table-column>
       <el-table-column label="禁用状态" width="100" align="center">
         <template slot-scope="{row}">
-          <!-- <el-popconfirm
-            title="你确定禁用该用户吗？"
-            trigger="hover"
-            @onConfirm="updateUserIsUse(row)"
-          > -->
           <el-switch
             slot="reference"
             v-model="row.isUse"
@@ -78,7 +73,6 @@
             active-color="#13ce66"
             @change="updateUserUse($event,row)"
           />
-          <!-- </el-popconfirm> -->
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">

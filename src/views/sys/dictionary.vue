@@ -87,16 +87,18 @@
     </el-dialog>
 
     <el-dialog :title="detailListTitle" :visible.sync="dialogDetailFormVisible" style="margin-top:-100px;">
-      <div class="filter-container">
+       <el-row type="flex" justify="end" class="filter-container">
         <el-input v-model="listDetailQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
         &nbsp;
+         <el-button-group style="margin-left:10px;">
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleDetailFilter">
           查询
         </el-button>
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleDetailCreate">
+        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleDetailCreate">
           新增
         </el-button>
-      </div>
+        </el-button-group>
+     </el-row>
       <el-table
         :key="tableKey"
         v-loading="listLoading"
