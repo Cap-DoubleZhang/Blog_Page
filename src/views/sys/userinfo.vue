@@ -55,14 +55,17 @@
                     <el-form-item>
                       <el-upload
                         class="avatar-uploader"
-                        action="https://localhost:5001/api/file/file"
+                        action="https://localhost:5001/api/file/file?filePathName=userHeadPortrait"
                         :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
+                        :on-success="uploadSuccess"
                         :before-upload="beforeAvatarUpload"
                       >
                         <img v-if="imageUrl" :src="imageUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon" />
                       </el-upload>
+                    </el-form-item>
+                     <el-form-item label="头像路径">
+                      <el-input v-model="imageUrl" placeholder="非本地图片，请在此输入网络路径" />
                     </el-form-item>
                     <el-form-item>
                       <el-button type="primary" @click="uploadHeadPortrait()">
@@ -111,6 +114,7 @@ export default {
           this.user = response.data
       })
     },
+    //更改密码方法
     updatePassword() {
       updateUserPassword(this.password).then(() => {
         this.$message({
@@ -124,6 +128,10 @@ export default {
           reNewPaswword: ''
         }
       })
+    },
+    //上传图片成功后
+    uploadSuccess(respone) {
+      this.imageUrl = respone.data
     }
   }
 }
