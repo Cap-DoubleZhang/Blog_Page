@@ -1,12 +1,29 @@
 <template>
   <div class="app-container">
     <el-row type="flex" justify="end" class="filter-container">
-      <el-input v-model="listQuery.keyWord" prefix-icon="el-icon-search" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
-      <el-button-group style="margin-left:10px;">
-        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-input
+        v-model="listQuery.keyWord"
+        prefix-icon="el-icon-search"
+        placeholder="关键词，多个关键词请使用空格分隔"
+        style="width: 300px"
+        class="filter-item"
+      />
+      <el-button-group style="margin-left: 10px">
+        <el-button
+          v-waves
+          class="filter-item"
+          type="primary"
+          icon="el-icon-search"
+          @click="handleFilter"
+        >
           查询
         </el-button>
-        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+        <el-button
+          class="filter-item"
+          type="primary"
+          icon="el-icon-edit"
+          @click="handleCreate"
+        >
           新增
         </el-button>
       </el-button-group>
@@ -19,98 +36,160 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
-        <template slot-scope="{row}">
+      <el-table-column
+        label="序号"
+        prop="id"
+        sortable="custom"
+        align="center"
+        width="138"
+      >
+        <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="用户名" min-width="120px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.userLoginName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="昵称" min-width="120px">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.userShowName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="手机号码" width="110" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.phone }}</span>
         </template>
       </el-table-column>
       <el-table-column label="是否在线" width="80px" align="center">
-        <template slot-scope="{row}">
-          <el-button circle :style="{'background':row.isOnline?'green':'gray','padding':'4px','vertical-align': 'middle'}" />
-          &nbsp;&nbsp;<span>{{ row.isOnline?'在线':'离线' }}</span>
+        <template slot-scope="{ row }">
+          <el-button
+            circle
+            :style="{
+              background: row.isOnline ? 'green' : 'gray',
+              padding: '4px',
+              'vertical-align': 'middle',
+            }"
+          />
+          &nbsp;&nbsp;<span>{{ row.isOnline ? "在线" : "离线" }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上次登录时间" width="160px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.lastLoginTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上次登录IP" width="130px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.lastLoginIP }}</span>
         </template>
       </el-table-column>
       <el-table-column label="登陆次数" width="80px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.loginTimes }}</span>
         </template>
       </el-table-column>
       <el-table-column label="禁用状态" width="100" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-switch
             slot="reference"
             v-model="row.isUse"
             :active-value="1"
             :inactive-value="0"
             active-color="#13ce66"
-            @change="updateUserUse($event,row)"
+            @change="updateUserUse($event, row)"
           />
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.createdTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="310" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="310"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="{ row }">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
           <el-button type="primary" size="mini" @click="assignRoles(row)">
             分配角色
           </el-button>
-          <el-button type="primary" size="mini" @click="handleResetPassword(row)">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleResetPassword(row)"
+          >
             重置密码
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
+          <el-button
+            v-if="row.status != 'deleted'"
+            size="mini"
+            type="danger"
+            @click="handleDelete(row)"
+          >
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="listQuery.pageIndex"
+      :limit.sync="listQuery.pageSize"
+      @pagination="getList"
+    />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      style="margin-top: -100px"
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="right"
+        label-width="70px"
+        style="width: 85%; margin-left: 50px"
+      >
         <el-form-item label="用户名" prop="userLoginName" class="filter-item">
-          <el-input v-model="temp.userLoginName" placeholder="请输入用户名" :disabled="dialogStatus==='create'?false:true" />
+          <el-input
+            v-model="temp.userLoginName"
+            placeholder="请输入用户名"
+            :disabled="dialogStatus === 'create' ? false : true"
+          />
         </el-form-item>
         <el-form-item label="昵称" prop="userShowName">
           <el-input v-model="temp.userShowName" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label="头像">
-          <el-button size="small" type="primary">点击上传头像</el-button>
+          <el-upload
+            class="avatar-uploader"
+            action="https://localhost:5001/api/file/file?filePathName=userHeadPortrait"
+            :show-file-list="false"
+            :on-success="uploadSuccess"
+            :on-error="uploadError"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img
+              v-if="temp.headPortrait"
+              :src="temp.headPortrait"
+              class="avatar"
+            >
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
         </el-form-item>
         <el-form-item label="手机号码">
           <el-input v-model="temp.phone" placeholder="请输入手机号码" />
@@ -119,7 +198,12 @@
           <el-input v-model="temp.eMail" placeholder="请输入邮箱" />
         </el-form-item>
         <el-form-item label="出生日期">
-          <el-date-picker v-model="temp.birthDate" type="date" placeholder="请选择出生日期" style="width:100%;" />
+          <el-date-picker
+            v-model="temp.birthDate"
+            type="date"
+            placeholder="请选择出生日期"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="身份证号">
           <el-input v-model="temp.idCard" placeholder="请输入身份证号" />
@@ -131,29 +215,60 @@
           <el-input v-model="temp.weChat" placeholder="请输入微信" />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="temp.descripts" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
+          <el-input
+            v-model="temp.descripts"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            type="textarea"
+            maxlength="200"
+            show-word-limit
+            placeholder="描述"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          关闭
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+        >
           确认
         </el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="重置密码" :visible.sync="dialogResetPasswordVisible" style="margin-top:-100px;">
-      <el-form ref="dataFormResetPassword" :rules="rulesReset" :model="resetPasswordTemp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+    <el-dialog
+      title="重置密码"
+      :visible.sync="dialogResetPasswordVisible"
+      style="margin-top: -100px"
+    >
+      <el-form
+        ref="dataFormResetPassword"
+        :rules="rulesReset"
+        :model="resetPasswordTemp"
+        label-position="right"
+        label-width="80px"
+        style="width: 85%; margin-left: 50px"
+      >
         <el-form-item label="用户名" prop="userLoginName" class="filter-item">
-          <el-input v-model="resetPasswordTemp.userLoginName" placeholder="请输入用户名" :disabled="true" />
+          <el-input
+            v-model="resetPasswordTemp.userLoginName"
+            placeholder="请输入用户名"
+            :disabled="true"
+          />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="resetPasswordTemp.newPassword" show-password placeholder="请输入新密码" />
+          <el-input
+            v-model="resetPasswordTemp.newPassword"
+            show-password
+            placeholder="请输入新密码"
+          />
         </el-form-item>
         <el-form-item label="确认密码" prop="reNewPassword">
-          <el-input v-model="resetPasswordTemp.reNewPassword" show-password placeholder="请输入确认密码" />
+          <el-input
+            v-model="resetPasswordTemp.reNewPassword"
+            show-password
+            placeholder="请输入确认密码"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -166,49 +281,65 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="分配角色" :visible.sync="dialogUserRoleVisible" style="margin-top:-100px;">
+    <el-dialog
+      title="分配角色"
+      :visible.sync="dialogUserRoleVisible"
+      style="margin-top: -100px"
+    >
       <el-table
         ref="userRolesDataList"
         :key="tableKey"
         v-loading="listLoading"
         :data="userRolesData"
         border
-        style="width: 100%;"
+        style="width: 100%"
       >
-        <el-table-column type="selection" width="55" align="center" :reserve-selection="selectable" />
-        <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
-          <template slot-scope="{row}">
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center"
+          :reserve-selection="selectable"
+        />
+        <el-table-column
+          label="序号"
+          prop="id"
+          sortable="custom"
+          align="center"
+          width="138"
+        >
+          <template slot-scope="{ row }">
             <span>{{ row.id }}</span>
           </template>
         </el-table-column>
         <el-table-column label="角色名" min-width="120px">
-          <template slot-scope="{row}">
+          <template slot-scope="{ row }">
             <span>{{ row.roleName }}</span>
           </template>
         </el-table-column>
         <el-table-column label="角色描述" min-width="120px">
-          <template slot-scope="{row}">
+          <template slot-scope="{ row }">
             <span>{{ row.roleDesc }}</span>
           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogUserRoleVisible = false">
-          关闭
-        </el-button>
-        <el-button type="primary" @click="saveUserRoles">
-          确认
-        </el-button>
+        <el-button @click="dialogUserRoleVisible = false"> 关闭 </el-button>
+        <el-button type="primary" @click="saveUserRoles"> 确认 </el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 <script>
 // import { defineComponent } from '@vue/composition-api'
- import { getUsers, saveUser, deleteUser, updateUserIsUse, resetUserPassword } from '@/api/user'
- import { getUserRoles, saveUserRoles } from '@/api/system/userrole'
- import waves from '@/directive/waves' // waves directive
+import {
+  getUsers,
+  saveUser,
+  deleteUser,
+  updateUserIsUse,
+  resetUserPassword
+} from '@/api/user'
+import { getUserRoles, saveUserRoles } from '@/api/system/userrole'
+import waves from '@/directive/waves' // waves directive
 // import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -269,13 +400,25 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
-        userShowName: [{ required: true, message: '昵称不可为空.', trigger: 'blur' }]
+        userLoginName: [
+          { required: true, message: '用户名不可为空.', trigger: 'blur' }
+        ],
+        userShowName: [
+          { required: true, message: '昵称不可为空.', trigger: 'blur' }
+        ]
       },
       rulesReset: {
-        userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
-        newPassword: [{ required: true, message: '新密码不可为空.', trigger: 'blur' }, { min: 6, message: '不可小于6位字符.', trigger: 'blur' }],
-        reNewPassword: [{ required: true, message: '确认密码不可为空.', trigger: 'blur' }, { min: 6, message: '不可小于6位字符.', trigger: 'blur' }]
+        userLoginName: [
+          { required: true, message: '用户名不可为空.', trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: '新密码不可为空.', trigger: 'blur' },
+          { min: 6, message: '不可小于6位字符.', trigger: 'blur' }
+        ],
+        reNewPassword: [
+          { required: true, message: '确认密码不可为空.', trigger: 'blur' },
+          { min: 6, message: '不可小于6位字符.', trigger: 'blur' }
+        ]
       },
       downloadLoading: false,
       dialogUserRoleVisible: false,
@@ -296,7 +439,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getUsers(this.listQuery).then(response => {
+      getUsers(this.listQuery).then((response) => {
         this.list = response.data.items
         this.total = response.data.totalCount
 
@@ -391,25 +534,26 @@ export default {
         row.isUse = 1
       }
       const arr = []
-        arr.push(row.id)
+      arr.push(row.id)
       this.$confirm(messgae, '提示', {}).then(() => {
-          updateUserIsUse({ ids: arr, isUse: $event }).then(() => {
-            if ($event === 1) {
-              row.isUse = 1
-            } else if ($event === 0) {
-              row.isUse = 0
-            }
-            this.$message({
-              message: '更改成功.',
-              type: 'success'
-            })
+        updateUserIsUse({ ids: arr, isUse: $event }).then(() => {
+          if ($event === 1) {
+            row.isUse = 1
+          } else if ($event === 0) {
+            row.isUse = 0
+          }
+          this.$message({
+            message: '更改成功.',
+            type: 'success'
           })
-       })
+        })
+      })
     },
     handleDelete(row) {
-        const arr = []
-        arr.push(row.id)
-       this.$confirm(`你确定删除 ${row.userLoginName} 吗？`, '提示', {}).then(() => {
+      const arr = []
+      arr.push(row.id)
+      this.$confirm(`你确定删除 ${row.userLoginName} 吗？`, '提示', {}).then(
+        () => {
           deleteUser({ ids: arr }).then(() => {
             this.getList()
             this.dialogFormVisible = false
@@ -418,7 +562,8 @@ export default {
               type: 'success'
             })
           })
-       })
+        }
+      )
     },
     updateUserNewPassword() {
       this.$refs['dataFormResetPassword'].validate((valid) => {
@@ -434,11 +579,11 @@ export default {
       })
     },
     getUserRolesList() {
-      getUserRoles(this.listUserRolesQuery).then(response => {
+      getUserRoles(this.listUserRolesQuery).then((response) => {
         this.$nextTick(() => {
           this.userRolesData = response.data
-          this.userRolesData.forEach(
-            o => this.$refs.userRolesDataList.toggleRowSelection(o, true)
+          this.userRolesData.forEach((o) =>
+            this.$refs.userRolesDataList.toggleRowSelection(o, true)
           )
         })
       })
@@ -451,10 +596,10 @@ export default {
     },
     saveUserRoles() {
       const roleIds = []
-      this.$refs.userRolesDataList.selection.forEach(a => {
+      this.$refs.userRolesDataList.selection.forEach((a) => {
         roleIds.push(a.id)
       })
-     this.userRoles.roleIds = roleIds
+      this.userRoles.roleIds = roleIds
       saveUserRoles(this.userRoles).then(() => {
         this.dialogUserRoleVisible = false
         this.$message({
@@ -462,7 +607,49 @@ export default {
           type: 'success'
         })
       })
+    },
+    // 上传图片成功后
+    uploadSuccess(respone) {
+      this.temp.headPortrait = respone.data
+      this.$message({
+        message: '上传成功.',
+        type: 'success',
+        duration: 2000
+      })
+    },
+    // 上传图片失败事件
+    uploadError(respone) {
+      this.$message({
+        message: respone.errors,
+        type: 'error',
+        duration: 2000
+      })
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.avatar-uploader .el-upload .avatar-uploader-icon {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover .avatar-uploader-icon:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>

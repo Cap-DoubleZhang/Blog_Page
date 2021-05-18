@@ -78,15 +78,15 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="标题" class="filter-item">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="temp.title" placeholder="请输入标题" />
         </el-form-item>
-        <el-form-item label="文章类型" class="filter-item">
+        <el-form-item label="文章类型" prop="blogType">
           <el-input v-model="temp.blogType" placeholder="请输入文章类型" />
         </el-form-item>
         <el-form-item label="发布时间">
-          <el-date-picker v-model="temp.publishTime" type="date" placeholder="请选择发布时间" style="width:100%;" />
+          <el-date-picker v-model="temp.publishTime" type="datetime" placeholder="请选择发布时间" style="width:100%;" />
         </el-form-item>
         <el-form-item label="封面">
           <el-input v-model="temp.cover" placeholder="请输入封面" />
@@ -103,9 +103,9 @@
           <el-input v-model="temp.tags" placeholder="请输入标签" />
         </el-form-item>
         <el-form-item label="简介">
-          <el-input v-model="temp.synopsis" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="简介" />
+          <el-input v-model="temp.synopsis" :autosize="{ minRows: 2, maxRows: 4}" maxlength="200" show-word-limit type="textarea" placeholder="简介" />
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" prop="content">
           <markdown-editor v-model="temp.content" />
         </el-form-item>
       </el-form>
@@ -209,8 +209,10 @@ export default {
       },
       dialogPvVisible: false,
       rules: {
-        userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
-        userShowName: [{ required: true, message: '昵称不可为空.', trigger: 'blur' }]
+        title: [{ required: true, message: '标题不可为空.', trigger: 'blur' },
+                { max: 30, message: '标题长度不可大于30位字符.', trigger: 'blur' }],
+        blogType: [{ required: true, message: '文章类型不可为空.', trigger: 'blur' }]
+
       },
       downloadLoading: false,
       listComment: null,
