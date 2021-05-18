@@ -21,22 +21,22 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="auto">
+      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="140">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="字典编码" min-width="80">
+      <el-table-column label="字典编码" min-width="100">
         <template slot-scope="{row}">
           <span>{{ row.code }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="字典名称" min-width="50px">
+      <el-table-column label="字典名称" min-width="100">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="字典描述" width="400">
+      <el-table-column label="字典描述" width="150">
         <template slot-scope="{row}">
           <span>{{ row.remark }}</span>
         </template>
@@ -47,7 +47,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -55,9 +55,9 @@
           <el-button type="primary" size="mini" @click="handleDetailShow(row)">
             明细列表
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
+          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
             删除
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -65,15 +65,15 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="字典编码">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+        <el-form-item label="字典编码" prop="code">
           <el-input v-model="temp.code" placeholder="请输入字典编码" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
-        <el-form-item label="字典名称">
+        <el-form-item label="字典名称" prop="name">
           <el-input v-model="temp.name" placeholder="请输入字典名称" />
         </el-form-item>
         <el-form-item label="字典描述">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
+          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -87,18 +87,18 @@
     </el-dialog>
 
     <el-dialog :title="detailListTitle" :visible.sync="dialogDetailFormVisible" style="margin-top:-100px;">
-       <el-row type="flex" justify="end" class="filter-container">
+      <el-row type="flex" justify="end" class="filter-container">
         <el-input v-model="listDetailQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
         &nbsp;
-         <el-button-group style="margin-left:10px;">
-        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleDetailFilter">
-          查询
-        </el-button>
-        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleDetailCreate">
-          新增
-        </el-button>
+        <el-button-group style="margin-left:10px;">
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleDetailFilter">
+            查询
+          </el-button>
+          <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleDetailCreate">
+            新增
+          </el-button>
         </el-button-group>
-     </el-row>
+      </el-row>
       <el-table
         :key="tableKey"
         v-loading="listLoading"
@@ -108,17 +108,17 @@
         style="width: 100%;"
       >
         <el-table-column type="selection" width="40" align="center" />
-        <el-table-column label="序号" prop="id" sortable="custom" align="left" width="auto">
+        <el-table-column label="序号" prop="id" sortable="custom" align="left" width="138">
           <template slot-scope="{row}">
             <span>{{ row.id }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="明细编码" min-width="80">
+        <el-table-column label="明细编码" min-width="100">
           <template slot-scope="{row}">
             <span>{{ row.detailCode }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="值" min-width="50px">
+        <el-table-column label="值" min-width="100">
           <template slot-scope="{row}">
             <span>{{ row.value }}</span>
           </template>
@@ -150,18 +150,18 @@
     </el-dialog>
 
     <el-dialog :title="textDetailMap[dialogDetailInfoStatus]" :visible.sync="dialogDetailInfoFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="tempDetail" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="明细编码">
-          <el-input v-model="tempDetail.detailCode" placeholder="请输入字典编码" :disabled="dialogDetailInfoStatus==='create'?false:true" />
+      <el-form ref="dataFormDetail" :rules="rulesDetail" :model="tempDetail" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+        <el-form-item label="明细编码" prop="detailCode">
+          <el-input v-model="tempDetail.detailCode" placeholder="请输入字典明细编码" :disabled="dialogDetailInfoStatus==='create'?false:true" />
         </el-form-item>
-        <el-form-item label="明细值">
+        <el-form-item label="明细值" prop="value">
           <el-input v-model="tempDetail.value" placeholder="请输入明细值" />
         </el-form-item>
         <el-form-item label="排序">
-          <el-input v-model="tempDetail.sortIndex" placeholder="请输入排序" />
+          <el-input-number v-model="tempDetail.sortIndex" controls-position="right" @change="handleChange" />
         </el-form-item>
         <el-form-item label="明细描述">
-          <el-input v-model="tempDetail.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
+          <el-input v-model="tempDetail.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -179,11 +179,20 @@
 <script>
  import { getDictionaries, saveDictionary, deleteDictionary, getDictionariesDetail, saveDictionaryDetail, deleteDictionaryDetail } from '@/api/dictionary'
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+ import { validAlphabets } from '@/utils/validate'
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   data() {
+    const ValidAlphabets = (rule, value, callback) => {
+      if (value.length <= 0) { callback(new Error('明细编码不能为空.')) }
+      if (!validAlphabets(value)) {
+        callback(new Error('明细编码只能由字母组成.'))
+      } else {
+        callback()
+      }
+    }
     return {
       tableKey: 0,
       list: null,
@@ -233,7 +242,12 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        roleName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }]
+        code: [{ required: true, message: '字典编码不可为空.', trigger: 'blur' }],
+        name: [{ required: true, message: '字典名称不可为空.', trigger: 'blur' }]
+      },
+      rulesDetail: {
+        detailCode: [{ required: true, trigger: 'blur', validator: ValidAlphabets }],
+        value: [{ required: true, message: '字典明细值不可为空.', trigger: 'blur' }]
       },
       downloadLoading: false,
       options: null,
@@ -305,7 +319,7 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = row
+      this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -320,9 +334,12 @@ export default {
       this.dialogDetailInfoFormVisible = true
     },
     handleDetailUpdate(row) {
-      this.tempDetail = row
+      this.tempDetail = Object.assign({}, row) // copy obj
       this.dialogDetailInfoStatus = 'update'
       this.dialogDetailInfoFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataFormDetail'].clearValidate()
+      })
     },
     handleDetailShow(row) {
       this.detailCode = row.code
@@ -367,7 +384,7 @@ export default {
        })
     },
     saveDetailData() {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs['dataFormDetail'].validate((valid) => {
         if (valid) {
           this.tempDetail.code = this.detailCode
           saveDictionaryDetail(this.tempDetail).then(() => {

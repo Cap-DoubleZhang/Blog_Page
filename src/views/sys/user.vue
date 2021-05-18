@@ -103,10 +103,10 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="用户名" prop="用户名" class="filter-item">
+        <el-form-item label="用户名" prop="userLoginName" class="filter-item">
           <el-input v-model="temp.userLoginName" placeholder="请输入用户名" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
-        <el-form-item label="昵称">
+        <el-form-item label="昵称" prop="userShowName">
           <el-input v-model="temp.userShowName" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label="头像">
@@ -131,7 +131,7 @@
           <el-input v-model="temp.weChat" placeholder="请输入微信" />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="temp.descripts" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
+          <el-input v-model="temp.descripts" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -145,14 +145,14 @@
     </el-dialog>
 
     <el-dialog title="重置密码" :visible.sync="dialogResetPasswordVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="用户名" prop="用户名" class="filter-item">
-          <el-input v-model="resetPasswordTemp.userLoginName" placeholder="请输入用户名" :disabled="dialogStatus==='create'?false:true" />
+      <el-form ref="dataFormResetPassword" :rules="rulesReset" :model="resetPasswordTemp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+        <el-form-item label="用户名" prop="userLoginName" class="filter-item">
+          <el-input v-model="resetPasswordTemp.userLoginName" placeholder="请输入用户名" :disabled="true" />
         </el-form-item>
-        <el-form-item label="新密码">
+        <el-form-item label="新密码" prop="newPassword">
           <el-input v-model="resetPasswordTemp.newPassword" show-password placeholder="请输入新密码" />
         </el-form-item>
-        <el-form-item label="确认密码">
+        <el-form-item label="确认密码" prop="reNewPassword">
           <el-input v-model="resetPasswordTemp.reNewPassword" show-password placeholder="请输入确认密码" />
         </el-form-item>
       </el-form>
@@ -272,6 +272,11 @@ export default {
         userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
         userShowName: [{ required: true, message: '昵称不可为空.', trigger: 'blur' }]
       },
+      rulesReset: {
+        userLoginName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }],
+        newPassword: [{ required: true, message: '新密码不可为空.', trigger: 'blur' }, { min: 6, message: '不可小于6位字符.', trigger: 'blur' }],
+        reNewPassword: [{ required: true, message: '确认密码不可为空.', trigger: 'blur' }, { min: 6, message: '不可小于6位字符.', trigger: 'blur' }]
+      },
       downloadLoading: false,
       dialogUserRoleVisible: false,
       userRoles: {
@@ -356,6 +361,9 @@ export default {
       this.resetPasswordTemp.id = row.id
       this.resetPasswordTemp.userLoginName = row.userLoginName
       this.dialogResetPasswordVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataFormResetPassword'].clearValidate()
+      })
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -413,12 +421,16 @@ export default {
        })
     },
     updateUserNewPassword() {
-      resetUserPassword(this.resetPasswordTemp).then(() => {
-        this.dialogResetPasswordVisible = false
-        this.$message({
-          message: '重置成功.',
-          type: 'success'
-        })
+      this.$refs['dataFormResetPassword'].validate((valid) => {
+        if (valid) {
+          resetUserPassword(this.resetPasswordTemp).then(() => {
+            this.dialogResetPasswordVisible = false
+            this.$message({
+              message: '重置成功.',
+              type: 'success'
+            })
+          })
+        }
       })
     },
     getUserRolesList() {

@@ -55,18 +55,18 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="120px">
+      <el-table-column label="描述" min-width="120">
         <template slot-scope="{row}">
           <span>{{ row.roleDesc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="160px" align="center">
+      <el-table-column label="创建时间" width="160" align="center">
         <template slot-scope="{row}">
           <span>{{ row.createdTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -82,7 +82,7 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="角色名">
+        <el-form-item label="角色名" prop="roleName">
           <el-input v-model="temp.roleName" placeholder="请输入角色名" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
         <el-form-item label="管理员">
@@ -94,7 +94,7 @@
           />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="temp.roleDesc" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="描述" />
+          <el-input v-model="temp.roleDesc" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -214,7 +214,7 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = row
+      this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {

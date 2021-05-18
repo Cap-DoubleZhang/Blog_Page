@@ -47,11 +47,20 @@ service.interceptors.response.use(
 
         // if the custom code is not 20000, it is judged as an error.
         if (res.statusCode !== 200) {
-            Message({
-                message: res.errors || 'Error',
-                type: 'error',
-                duration: 5 * 1000
-            })
+            // 数据验证错误 提示 400
+            if (res.statusCode === 400) {
+                Message({
+                    message: res.errors[0].messages[0] || 'Error',
+                    type: 'error',
+                    duration: 5 * 1000
+                })
+            } else {
+                Message({
+                    message: res.errors || 'Error',
+                    type: 'error',
+                    duration: 5 * 1000
+                })
+            }
 
             // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
             if (res.statusCode === 50008 || res.statusCode === 50012 || res.statusCode === 50014) {

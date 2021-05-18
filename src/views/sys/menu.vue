@@ -24,14 +24,9 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="auto">
+      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="140">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="菜单名" min-width="120px">
-        <template slot-scope="{row}">
-          <span>{{ row.menuName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="菜单编码" min-width="120px">
@@ -39,12 +34,17 @@
           <span>{{ row.menuCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="排序" min-width="20">
+      <el-table-column label="菜单名" min-width="120px">
+        <template slot-scope="{row}">
+          <span>{{ row.menuName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="排序" min-width="50">
         <template slot-scope="{row}">
           <span>{{ row.sortIndex }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="菜单状态" width="100" align="center">
+      <el-table-column label="菜单状态" width="90" align="center">
         <template slot-scope="{row}">
           <el-tag :class="{ 'el-tag--info':row.menuType==1 }">{{ row.menuType==0?"菜单":"按钮" }}</el-tag>
         </template>
@@ -67,7 +67,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -82,12 +82,12 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="菜单名称">
-          <el-input v-model="temp.menuName" placeholder="请输入菜单名称" />
-        </el-form-item>
-        <el-form-item label="菜单编码">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+        <el-form-item label="菜单编码" prop="menuCode">
           <el-input v-model="temp.menuCode" placeholder="请输入菜单编码" :disabled="dialogStatus==='create'?false:true" />
+        </el-form-item>
+        <el-form-item label="菜单名称" prop="menuName">
+          <el-input v-model="temp.menuName" placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单图标">
           <e-icon-picker v-model="temp.menuIcon" />
@@ -96,7 +96,7 @@
           <el-input v-model="temp.menuTitle" placeholder="请输入菜单标题" />
         </el-form-item>
         <el-form-item label="上级菜单">
-          <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单">
+          <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单" style="width:100%;">
             <el-option
               v-for="item in options"
               :key="item.id"
@@ -105,11 +105,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="菜单路径">
+        <el-form-item label="菜单路径" prop="menuPath">
           <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
         </el-form-item>
         <el-form-item label="菜单排序">
-          <el-input-number v-model="temp.sortIndex" />
+          <el-input-number v-model="temp.sortIndex" controls-position="right" style="width:100%;" />
         </el-form-item>
         <el-form-item label="禁用状态">
           <el-switch
@@ -125,6 +125,8 @@
             :active-value="1"
             :inactive-value="0"
             active-color="#13ce66"
+            inactive-text="菜单"
+            active-text="按钮"
           />
         </el-form-item>
       </el-form>
@@ -144,12 +146,21 @@
  import { getMenus, saveMenu, deleteMenu, updateMenuIsUse, getAllMenus } from '@/api/menu'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+ import { validAlphabets } from '@/utils/validate'
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
   data() {
+    const ValidAlphabets = (rule, value, callback) => {
+      if (value.length <= 0) { callback(new Error('菜单编码不能为空.')) }
+      if (!validAlphabets(value)) {
+        callback(new Error('菜单编码只能由字母组成.'))
+      } else {
+        callback()
+      }
+    }
     return {
       tableKey: 0,
       list: null,
@@ -181,7 +192,9 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        roleName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }]
+        menuCode: [{ required: true, trigger: 'blur', validator: ValidAlphabets }],
+        menuName: [{ required: true, message: '菜单名称不可为空.', trigger: 'blur' }],
+        menuPath: [{ required: true, message: '菜单路径不可为空.', trigger: 'blur' }]
       },
       downloadLoading: false,
       options: null,

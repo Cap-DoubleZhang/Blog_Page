@@ -86,3 +86,12 @@ export function updateUserPassword(data) {
         data
     })
 }
+
+// 更改用户头像
+export function updateUserHeadPortrait(data) {
+    return request({
+        url: 'user/userHeadPortrait',
+        method: 'put',
+        data
+    })
+}

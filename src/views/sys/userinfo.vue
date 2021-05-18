@@ -1,43 +1,111 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :span="6" :xs="24">
-        <el-card style="margin-bottom:20px;">
-          <div slot="header" class="clearfix">
-            <span>用户信息</span>
-          </div>
-          <div class="user-profile">
-            <div class="box-center">
-              <pan-thumb class="text-center" :image="user.headPortrait" :height="'100px'" :width="'100px'">
-                <div>Hello</div>
-              </pan-thumb>
-            </div>
-            <div class="box-center">
-              <div class="user-name text-center">{{ user.userShowName }}</div>
-              <div class="user-role text-center text-muted">{{ user.userLoginName }}</div>
-            </div>
-            <div class="box-center">
-              <div class="user-name text-center">简介：{{ user.introduction }}</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-
-      <el-col :span="18" :xs="24">
+    <el-row>
+      <el-col>
         <el-card>
           <el-tabs v-model="activeTab">
+            <el-tab-pane label="基本信息" name="baseInfo">
+              <div class="user-activity">
+                <div class="box-center" style="width: 100%">
+                  <el-form
+                    ref="dataFormBaseInfo"
+                    :rules="rulesBaseInfo"
+                    :model="user"
+                    label-position="right"
+                    label-width="90px"
+                    style="width: 85%; margin-left: 50px"
+                  >
+                    <el-form-item label="登录名" prop="userLoginName">
+                      <el-input v-model="user.userLoginName" disabled="true" />
+                    </el-form-item>
+                    <el-form-item label="昵称" prop="userShowName">
+                      <el-input
+                        v-model="user.userShowName"
+                        placeholder="请输入昵称"
+                      />
+                    </el-form-item>
+                    <el-form-item label="手机号码">
+                      <el-input
+                        v-model="user.phone"
+                        placeholder="请输入手机号码"
+                      />
+                    </el-form-item>
+                    <el-form-item label="邮箱">
+                      <el-input v-model="user.eMail" placeholder="请输入邮箱" />
+                    </el-form-item>
+                    <el-form-item label="出生日期">
+                      <el-date-picker
+                        v-model="user.birthDate"
+                        type="date"
+                        placeholder="请选择出生日期"
+                        style="width: 100%"
+                      />
+                    </el-form-item>
+                    <el-form-item label="身份证号">
+                      <el-input
+                        v-model="user.idCard"
+                        placeholder="请输入身份证号"
+                      />
+                    </el-form-item>
+                    <el-form-item label="QQ">
+                      <el-input v-model="user.qq" placeholder="请输入QQ" />
+                    </el-form-item>
+                    <el-form-item label="微信">
+                      <el-input
+                        v-model="user.weChat"
+                        placeholder="请输入微信"
+                      />
+                    </el-form-item>
+                    <el-form-item label="描述">
+                      <el-input
+                        v-model="user.introduction"
+                        type="textarea"
+                        placeholder="请输入描述"
+                        :autosize="{ minRows: 3, maxRows: 4 }"
+                        maxlength="200"
+                        show-word-limit
+                      />
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="updateBaseInfo()">
+                        确认保存
+                      </el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </div>
+            </el-tab-pane>
             <el-tab-pane label="更改密码" name="updatePassword">
               <div class="user-activity">
-                <div class="box-center" style="width:100%;">
-                  <el-form ref="dataForm" label-position="right" label-width="90px" style="width: 85%; margin-left:50px;">
-                    <el-form-item label="原密码">
-                      <el-input v-model="password.oldPassword" show-password placeholder="请输入原密码" />
+                <div class="box-center" style="width: 100%">
+                  <el-form
+                    ref="dataFormPassword"
+                    :rules="rulesPassword"
+                    :model="password"
+                    label-position="right"
+                    label-width="100px"
+                    style="width: 85%; margin-left: 50px"
+                  >
+                    <el-form-item label="原密码" prop="oldPassword">
+                      <el-input
+                        v-model="password.oldPassword"
+                        show-password
+                        placeholder="请输入原密码"
+                      />
                     </el-form-item>
-                    <el-form-item label="新密码">
-                      <el-input v-model="password.newPassword" show-password placeholder="请输入新密码" />
+                    <el-form-item label="新密码" prop="newPassword">
+                      <el-input
+                        v-model="password.newPassword"
+                        show-password
+                        placeholder="请输入新密码"
+                      />
                     </el-form-item>
-                    <el-form-item label="确认新密码">
-                      <el-input v-model="password.reNewPassword" show-password placeholder="请输入确认新密码" />
+                    <el-form-item label="确认新密码" prop="reNewPassword">
+                      <el-input
+                        v-model="password.reNewPassword"
+                        show-password
+                        placeholder="请输入确认新密码"
+                      />
                     </el-form-item>
                     <el-form-item>
                       <el-button type="primary" @click="updatePassword()">
@@ -50,22 +118,33 @@
             </el-tab-pane>
             <el-tab-pane label="更改头像" name="updateHeadPortrait">
               <div class="user-activity">
-                <div class="box-center" style="width:100%;">
-                  <el-form ref="dataForm" label-position="right" label-width="90px" style="width: 85%; margin-left:50px;">
+                <div class="box-center" style="width: 100%">
+                  <el-form
+                    ref="dataFormUpdateHeadPortrait"
+                    :rules="rulesUpdateHeadPortrait"
+                    :model="headPortrait"
+                    label-position="right"
+                    label-width="90px"
+                    style="width: 85%; margin-left: 50px"
+                  >
                     <el-form-item>
                       <el-upload
                         class="avatar-uploader"
                         action="https://localhost:5001/api/file/file?filePathName=userHeadPortrait"
                         :show-file-list="false"
                         :on-success="uploadSuccess"
+                        :on-error="uploadError"
                         :before-upload="beforeAvatarUpload"
                       >
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <img v-if="headPortrait.headPortrait" :src="headPortrait.headPortrait" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon" />
                       </el-upload>
                     </el-form-item>
-                     <el-form-item label="头像路径">
-                      <el-input v-model="imageUrl" placeholder="非本地图片，请在此输入网络路径" />
+                    <el-form-item label="头像路径" prop="headPortrait">
+                      <el-input
+                        v-model="headPortrait.headPortrait"
+                        placeholder="非本地图片，请在此输入网络路径"
+                      />
                     </el-form-item>
                     <el-form-item>
                       <el-button type="primary" @click="uploadHeadPortrait()">
@@ -83,11 +162,14 @@
   </div>
 </template>
 <script>
-import PanThumb from '@/components/PanThumb'
-import { getUserInfo, updateUserPassword } from '@/api/user'
+import {
+  getUserInfo,
+  updateUserPassword,
+  saveUser,
+  updateUserHeadPortrait
+} from '@/api/user'
 
 export default {
-  components: { PanThumb },
   data() {
     return {
       user: {
@@ -101,8 +183,37 @@ export default {
         newPassword: '',
         reNewPaswword: ''
       },
-      activeTab: 'updatePassword',
-      imageUrl: ''
+      activeTab: 'baseInfo',
+      headPortrait: {
+        headPortrait: ''
+      },
+      rulesBaseInfo: {
+        userLoginName: [
+          { required: true, message: '用户名不可为空.', trigger: 'blur' }
+        ],
+        userShowName: [
+          { required: true, message: '昵称不可为空.', trigger: 'blur' }
+        ]
+      },
+      rulesPassword: {
+        oldPassword: [
+          { required: true, message: '原密码不可为空.', trigger: 'blur' },
+          { min: 6, message: '原密码不可小于6位字符.', trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: '新密码不可为空.', trigger: 'blur' },
+          { min: 6, message: '新密码不可小于6位字符.', trigger: 'blur' }
+        ],
+        reNewPassword: [
+          { required: true, message: '确认新密码不可为空.', trigger: 'blur' },
+          { min: 6, message: '确认新密码不可小于6位字符.', trigger: 'blur' }
+        ]
+      },
+      rulesUpdateHeadPortrait: {
+        headPortrait: [
+          { required: true, message: '头像地址不可为空.', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -110,28 +221,76 @@ export default {
   },
   methods: {
     getUser() {
-      getUserInfo().then(response => {
-          this.user = response.data
+      getUserInfo().then((response) => {
+        this.user = response.data
+        this.headPortrait.headPortrait = this.user.headPortrait
       })
     },
-    //更改密码方法
-    updatePassword() {
-      updateUserPassword(this.password).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.password = {
-          oldPassword: '',
-          newPassword: '',
-          reNewPaswword: ''
+    updateBaseInfo() {
+      this.$refs['dataFormBaseInfo'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.user)
+          saveUser(tempData).then(() => {
+            this.getUser()
+            this.$notify({
+              message: '更改成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
         }
       })
     },
-    //上传图片成功后
+    // 更改密码方法
+    updatePassword() {
+      this.$refs['dataFormPassword'].validate((valid) => {
+        if (valid) {
+          updateUserPassword(this.password).then(() => {
+            this.$message({
+              message: '操作成功.',
+              type: 'success',
+              duration: 2000
+            })
+            this.password = {
+              oldPassword: '',
+              newPassword: '',
+              reNewPaswword: ''
+            }
+          })
+        }
+      })
+    },
+    // 上传图片成功后
     uploadSuccess(respone) {
-      this.imageUrl = respone.data
+      this.headPortrait.headPortrait = respone.data
+      this.$message({
+        message: '保存成功.',
+        type: 'success',
+        duration: 2000
+      })
+    },
+    uploadError(respone) {
+      this.$message({
+        message: respone.errors,
+        type: 'error',
+        duration: 2000
+      })
+    },
+    uploadHeadPortrait() {
+      this.$refs['dataFormUpdateHeadPortrait'].validate((valid) => {
+        if (valid) {
+          this.$confirm('你确定保存吗?', '提示', {}).then(() => {
+            updateUserHeadPortrait(this.headPortrait).then(() => {
+              this.getUser()
+              this.$notify({
+                message: '更改成功.',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          })
+        }
+      })
     }
   }
 }
@@ -196,26 +355,26 @@ export default {
 }
 
 .avatar-uploader .el-upload .avatar-uploader-icon {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover .avatar-uploader-icon:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover .avatar-uploader-icon:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
