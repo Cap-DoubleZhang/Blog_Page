@@ -16,7 +16,7 @@
                     style="width: 85%; margin-left: 50px"
                   >
                     <el-form-item label="登录名" prop="userLoginName">
-                      <el-input v-model="user.userLoginName" disabled="true" />
+                      <el-input v-model="user.userLoginName" disabled />
                     </el-form-item>
                     <el-form-item label="昵称" prop="userShowName">
                       <el-input
