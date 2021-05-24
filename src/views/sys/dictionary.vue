@@ -179,16 +179,16 @@
 <script>
  import { getDictionaries, saveDictionary, deleteDictionary, getDictionariesDetail, saveDictionaryDetail, deleteDictionaryDetail } from '@/api/dictionary'
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
- import { validAlphabets } from '@/utils/validate'
+ import { validCode } from '@/utils/validate'
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
   data() {
-    const ValidAlphabets = (rule, value, callback) => {
+    const ValidCode = (rule, value, callback) => {
       if (value.length <= 0) { callback(new Error('明细编码不能为空.')) }
-      if (!validAlphabets(value)) {
-        callback(new Error('明细编码只能由字母组成.'))
+      if (!validCode(value)) {
+        callback(new Error('明细编码只能包含数字、字母.'))
       } else {
         callback()
       }
@@ -246,7 +246,7 @@ export default {
         name: [{ required: true, message: '字典名称不可为空.', trigger: 'blur' }]
       },
       rulesDetail: {
-        detailCode: [{ required: true, trigger: 'blur', validator: ValidAlphabets }],
+        detailCode: [{ required: true, trigger: 'blur', validator: ValidCode }],
         value: [{ required: true, message: '字典明细值不可为空.', trigger: 'blur' }]
       },
       downloadLoading: false,

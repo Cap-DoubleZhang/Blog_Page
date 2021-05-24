@@ -76,3 +76,13 @@ export function isArray(arg) {
     }
     return Array.isArray(arg)
 }
+
+/**
+ * 验证字符串 ，只可由英文字母、数字组成
+ * @param {*} str
+ * @returns {Boolean}
+ */
+export function validCode(str) {
+    const reg = /\w+$/
+    return reg.test(str)
+}
