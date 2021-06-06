@@ -36,6 +36,14 @@ export function updateBlogPublishType(data) {
     })
 }
 
+// 获取博客详情
+export function getBlogDetail(query) {
+    return request({
+        url: 'blog/detail/' + query,
+        method: 'get'
+    })
+}
+
 // 获取博客评论列表
 export function getBlogComments(query) {
     return request({

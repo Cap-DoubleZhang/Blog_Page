@@ -78,7 +78,7 @@ export function isArray(arg) {
 }
 
 /**
- * 验证字符串 ，只可由英文字母、数字组成
+ * 验证字符串 ，只可由英文字母、数字、下划线组成
  * @param {*} str
  * @returns {Boolean}
  */

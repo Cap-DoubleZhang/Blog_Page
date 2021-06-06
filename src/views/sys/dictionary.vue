@@ -188,7 +188,7 @@ export default {
     const ValidCode = (rule, value, callback) => {
       if (value.length <= 0) { callback(new Error('明细编码不能为空.')) }
       if (!validCode(value)) {
-        callback(new Error('明细编码只能包含数字、字母.'))
+        callback(new Error('明细编码只可由英文字母、数字、下划线组成.'))
       } else {
         callback()
       }

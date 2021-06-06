@@ -33,27 +33,10 @@
                     <el-form-item label="邮箱">
                       <el-input v-model="user.eMail" placeholder="请输入邮箱" />
                     </el-form-item>
-                    <el-form-item label="出生日期">
-                      <el-date-picker
-                        v-model="user.birthDate"
-                        type="date"
-                        placeholder="请选择出生日期"
-                        style="width: 100%"
-                      />
-                    </el-form-item>
                     <el-form-item label="身份证号">
                       <el-input
                         v-model="user.idCard"
                         placeholder="请输入身份证号"
-                      />
-                    </el-form-item>
-                    <el-form-item label="QQ">
-                      <el-input v-model="user.qq" placeholder="请输入QQ" />
-                    </el-form-item>
-                    <el-form-item label="微信">
-                      <el-input
-                        v-model="user.weChat"
-                        placeholder="请输入微信"
                       />
                     </el-form-item>
                     <el-form-item label="描述">

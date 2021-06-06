@@ -45,7 +45,15 @@ export const constantRoutes = [{
             title: '博客管理',
             icon: 'el-icon-reading'
         },
-        children: [{
+        children: [
+            {
+                path: 'blogEdit/:id(\\d+)',
+                component: () => import('@/views/blog/blogEdit'),
+                name: '编辑',
+                meta: { title: '博客详情', noCache: true, activeMenu: '/blog/blog' },
+                hidden: true
+            },
+            {
             path: 'blog',
             component: () =>
                 import ('@/views/blog/blog'),
