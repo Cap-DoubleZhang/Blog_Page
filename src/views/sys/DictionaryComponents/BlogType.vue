@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="value" placeholder="请选择">
+  <el-select v-model="value" :multiple="IsCanMultiple" placeholder="请选择">
     <el-option
       v-for="item in DictionaryDetail"
       :key="item.value"
@@ -13,17 +13,25 @@ import { getDictionariesDetail } from '@/api/dictionary'
 
 export default {
   name: 'BlogType',
+  props: {
+    detailcode: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       value: '',
       DictionaryDetail: null,
+      IsCanMultiple: false,
       Query: {
         pageSize: 100,
-        Code: 'detailCode'
+        Code: this.detailcode
       }
     }
   },
   created() {
+    console.log(this.detailcode)
     this.DictionariesDetail()
   },
   methods: {
