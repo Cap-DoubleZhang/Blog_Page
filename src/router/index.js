@@ -47,8 +47,15 @@ export const constantRoutes = [{
         },
         children: [
             {
-                path: 'blogEdit/:id(\\d+)',
-                component: () => import('@/views/blog/blogEdit'),
+                path: 'createBlog',
+                component: () => import('@/views/blog/createBlog'),
+                name: '创建',
+                meta: { title: '博客详情', noCache: true, activeMenu: '/blog/blog' },
+                hidden: true
+            },
+            {
+                path: 'editBlog/:id(\\d+)',
+                component: () => import('@/views/blog/editBlog'),
                 name: '编辑',
                 meta: { title: '博客详情', noCache: true, activeMenu: '/blog/blog' },
                 hidden: true

@@ -3,7 +3,7 @@
     <el-row type="flex" justify="end" class="filter-container">
       <el-input v-model="listQuery.keyWord" prefix-icon="el-icon-search" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
       <el-button-group style="margin-left:10px;">
-        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查询
         </el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
@@ -71,6 +71,14 @@
         </el-form-item>
         <el-form-item label="字典名称" prop="name">
           <el-input v-model="temp.name" placeholder="请输入字典名称" />
+        </el-form-item>
+        <el-form-item label="是否多选">
+          <el-switch
+            v-model="temp.isCanMultiple"
+            :active-value="true"
+            :inactive-value="false"
+            active-color="#13ce66"
+          />
         </el-form-item>
         <el-form-item label="字典描述">
           <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
@@ -158,7 +166,7 @@
           <el-input v-model="tempDetail.value" placeholder="请输入明细值" />
         </el-form-item>
         <el-form-item label="排序">
-          <el-input-number v-model="tempDetail.sortIndex" controls-position="right" @change="handleChange" />
+          <el-input-number v-model="tempDetail.sortIndex" controls-position="right" />
         </el-form-item>
         <el-form-item label="明细描述">
           <el-input v-model="tempDetail.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" maxlength="200" show-word-limit placeholder="描述" />
@@ -179,11 +187,13 @@
 <script>
  import { getDictionaries, saveDictionary, deleteDictionary, getDictionariesDetail, saveDictionaryDetail, deleteDictionaryDetail } from '@/api/dictionary'
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+ import waves from '@/directive/waves' // waves directive
  import { validCode } from '@/utils/validate'
 
 export default {
   name: 'ComplexTable',
   components: { Pagination },
+  directives: { waves },
   data() {
     const ValidCode = (rule, value, callback) => {
       if (value.length <= 0) { callback(new Error('明细编码不能为空.')) }
@@ -215,6 +225,7 @@ export default {
         id: 0,
         name: '',
         code: '',
+        isCanMultiple: false,
         remark: ''
       },
       tempDetail: {
@@ -258,7 +269,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getAllList()
   },
   methods: {
     getList() {

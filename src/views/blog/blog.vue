@@ -6,9 +6,14 @@
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查询
         </el-button>
-        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
+        <!-- <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">
           新增
-        </el-button>
+        </el-button> -->
+        <router-link :to="'/blog/createBlog'">
+          <el-button icon="el-icon-edit" class="filter-item" type="primary">
+            新增
+          </el-button>
+        </router-link>
       </el-button-group>
     </el-row>
 
@@ -62,14 +67,11 @@
 
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <router-link :to="'/blog/blogEdit/'+row.id">
+          <router-link :to="'/blog/editBlog/'+row.id">
             <el-button type="primary" size="mini">
               编辑
             </el-button>
           </router-link>
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
           <el-button type="primary" size="mini" @click="handleCommentShow(row)">
             评论列表
           </el-button>
@@ -81,49 +83,6 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="temp.title" placeholder="请输入标题" />
-        </el-form-item>
-        <el-form-item label="文章类型" prop="blogType">
-          <el-input v-model="temp.blogType" placeholder="请输入文章类型" />
-        </el-form-item>
-        <el-form-item label="发布时间">
-          <el-date-picker v-model="temp.publishTime" type="datetime" placeholder="请选择发布时间" style="width:100%;" />
-        </el-form-item>
-        <el-form-item label="封面">
-          <el-input v-model="temp.cover" placeholder="请输入封面" />
-        </el-form-item>
-        <el-form-item label="发布类型">
-          <el-switch
-            v-model="temp.publishType"
-            :active-value="1"
-            :inactive-value="0"
-            active-color="#13ce66"
-          />
-        </el-form-item>
-        <el-form-item label="标签">
-          <el-input v-model="temp.tags" placeholder="请输入标签" />
-        </el-form-item>
-        <el-form-item label="简介">
-          <el-input v-model="temp.synopsis" :autosize="{ minRows: 2, maxRows: 4}" maxlength="200" show-word-limit type="textarea" placeholder="简介" />
-        </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <markdown-editor v-model="temp.content" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          关闭
-        </el-button>
-        <el-button type="primary" @click="saveData()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
-
     <el-dialog :title="commmentListTitle" :visible.sync="dialogCommentFormVisible" style="margin-top:-100px;">
       <div class="filter-container">
         <el-input v-model="listCommentQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
@@ -163,7 +122,6 @@
   </div>
 </template>
 <script>
-// import { defineComponent } from '@vue/composition-api'
  import { getBlogs, saveBlog, deleteBlog, updateBlogPublishType, getBlogComments } from '@/api/blog/blog'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -275,14 +233,6 @@ export default {
         publishType: 0,
         content: ''
       }
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
     saveData() {
       this.$refs['dataForm'].validate((valid) => {

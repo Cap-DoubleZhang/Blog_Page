@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="value" :multiple="IsCanMultiple" placeholder="请选择">
+  <el-select v-model="value" collapse-tags :multiple="IsCanMultiple" placeholder="请选择">
     <el-option
       v-for="item in DictionaryDetail"
       :key="item.value"
@@ -9,7 +9,7 @@
   </el-select>
 </template>
 <script>
-import { getDictionariesDetail } from '@/api/dictionary'
+import { getDictionariesDetail, getDictionaries } from '@/api/dictionary'
 
 export default {
   name: 'BlogType',
@@ -27,18 +27,34 @@ export default {
       Query: {
         pageSize: 100,
         Code: this.detailcode
+      },
+      listQuery: {
+        pageIndex: 1,
+        pageSize: 1,
+        code: this.detailcode
       }
     }
   },
   created() {
-    console.log(this.detailcode)
     this.DictionariesDetail()
+    this.GetDetailList()
   },
   methods: {
     DictionariesDetail() {
       getDictionariesDetail(this.Query).then((response) => {
         this.DictionaryDetail = response.data.items
       })
+    },
+    GetDetailList() {
+      getDictionaries(this.listQuery).then(response => {
+        this.IsCanMultiple = response.data.items == null ? false : response.data.items[0].isCanMultiple
+      })
+    },
+    GetValue() {
+      return this.value
+    },
+    SetValue(Value) {
+       this.value = Value
     }
   }
 }
