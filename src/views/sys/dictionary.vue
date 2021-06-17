@@ -191,7 +191,6 @@
  import { validCode } from '@/utils/validate'
 
 export default {
-  name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
   data() {

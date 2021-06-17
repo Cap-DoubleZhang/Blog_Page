@@ -29,7 +29,6 @@
                 show-word-limit
               />
             </el-form-item>
-
           </el-col>
         </el-row>
 
