@@ -26,9 +26,9 @@ export default {
       IsCanMultiple: false,
       Query: {
         pageSize: 100,
-        Code: this.detailcode
+        code: this.detailcode
       },
-      listQuery: {
+      firstQuery: {
         pageIndex: 1,
         pageSize: 1,
         code: this.detailcode
@@ -46,7 +46,7 @@ export default {
       })
     },
     GetDetailList() {
-      getDictionaries(this.listQuery).then(response => {
+      getDictionaries(this.firstQuery).then(response => {
         this.IsCanMultiple = response.data.items == null ? false : response.data.items[0].isCanMultiple
       })
     },
