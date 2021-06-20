@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export function getSysFiles() {
+export function getWaterfallImages(query) {
     return request({
-      url: `file/imgs`,
-      method: 'get'
+      url: `waterfallImage/images`,
+      method: 'get',
+      params: query
     })
 }

@@ -109,11 +109,18 @@ export const constantRoutes = [{
             name: '字典管理',
             meta: { title: '字典管理' }
         }, {
-            path: 'files',
+            path: 'waterfallImages',
             component: () =>
                 import ('@/views/sys/waterfallImages'),
             name: '瀑布流图片',
-            meta: { title: '瀑布流图片' }
+            meta: { title: '瀑布流图片' },
+            hidden: true
+        }, {
+            path: 'updloadWaterfallImage',
+            component: () =>
+                import ('@/views/sys/uploadWaterfallImage'),
+            name: '上传图片',
+            meta: { title: '上传图片' }
         }]
     }
 ]

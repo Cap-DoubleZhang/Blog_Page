@@ -64,6 +64,7 @@
         <el-row>
           <el-col :span="24">
             <label class="lbl-title">摘要</label>
+            <el-button type="text" style="margin-left:10px;" @click="LayerCoverTxt">插入摘要右侧图片</el-button>
             <el-input
               v-model="postForm.synopsis"
               type="textarea"
@@ -152,6 +153,15 @@ export default {
             })
           })
         }
+      })
+    },
+    LayerCoverTxt() {
+      this.$prompt('', '请输出图片地址', {
+        confirmButtonText: '确定',
+          cancelButtonText: '取消'
+      }).then(({ value }) => {
+          this.postForm.cover = value
+          console.log(this.postForm.cover)
       })
     }
   }
