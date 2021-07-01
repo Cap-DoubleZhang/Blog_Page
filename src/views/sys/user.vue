@@ -435,6 +435,9 @@ export default {
   created() {
     this.getList()
   },
+  updated() {
+    this.toggleSelection(this.userRolesData)
+  },
   methods: {
     getList() {
       this.listLoading = true
@@ -578,6 +581,7 @@ export default {
       })
     },
     getUserRolesList() {
+      console.log(this.listUserRolesQuery)
       getUserRoles(this.listUserRolesQuery).then((response) => {
         this.$nextTick(() => {
           this.userRolesData = response.data
@@ -589,7 +593,7 @@ export default {
     },
     assignRoles(row) {
       this.dialogUserRoleVisible = true
-      this.listUserRolesQuery = row.id
+      this.listUserRolesQuery.id = row.id
       this.userRoles.id = row.id
       this.getUserRolesList()
     },
@@ -636,7 +640,17 @@ export default {
           this.$message.error('上传头像图片大小不能超过 10MB!')
         }
         return isJPG && isLt10M
-      }
+    },
+    toggleSelection(rows) {
+      rows.forEach(row => {
+        if (row.promiss) {
+       // toggleRowSelection  这个方法是用来选中某一行（打勾）
+       // row 是要选中的那一行
+      // true 是为选中
+              this.$refs.userRolesDataList.toggleRowSelection(row, true)
+        }
+      })
+    }
   }
 }
 </script>

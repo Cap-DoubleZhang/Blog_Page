@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function getUserRoles(data) {
+export function getUserRoles(query) {
     return request({
       url: `userRoles/userRoles`,
       method: 'get',
-      data
+      params: query
     })
 }
 

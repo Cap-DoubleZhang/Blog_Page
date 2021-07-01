@@ -3,7 +3,7 @@
     <el-upload
       class="upload-demo"
       drag
-      action="/waterfallImage/image"
+      :action="uploadUrl+'waterfallImage/image'"
       multiple
       :on-success="uploadSuccess"
       :on-error="uploadError"
@@ -23,7 +23,7 @@
 export default {
   data() {
     return {
-
+      uploadUrl: process.env.VUE_APP_BASE_API
     }
   },
   methods: {
