@@ -121,6 +121,14 @@ export const constantRoutes = [{
                 import ('@/views/sys/uploadWaterfallImage'),
             name: '上传图片',
             meta: { title: '上传图片' }
+        },
+         {
+            path: 'roleMenu',
+            component: () =>
+                import ('@/views/sys/role/roleMenu'),
+            name: '权限分配',
+            meta: { title: '权限分配' },
+            hidden: true
         }]
     }
 ]
