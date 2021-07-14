@@ -4,9 +4,12 @@
       <el-col :span="6" :xs="24">
         <div class="user-profile">
           <el-card style="margin-bottom:20px;">
-            <div :v-for="role in roleList">
-              <el-button type="text">{{ role.roleName }}</el-button>
+            <div v-for="role in roleList" :key="role">
+              <el-button type="text">
+                {{ role.roleName }}
+              </el-button>
             </div>
+            <el-tree :data="roleList" :props="defaultProps" />
           </el-card>
         </div>
       </el-col>
@@ -19,10 +22,13 @@
 export default {
   data() {
     return {
-        roleList: null,
-        listQuery: {
+      roleList: null,
+      listQuery: {
         pageIndex: 1,
         pageSize: 100
+      },
+      defaultProps: {
+        label: 'roleName'
       }
     }
   },
@@ -33,7 +39,6 @@ export default {
     getList() {
       getRoles(this.listQuery).then(response => {
         this.roleList = response.data.items
-        console.log(this.roleList)
       })
     }
   }
