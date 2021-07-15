@@ -4,12 +4,14 @@
       <el-col :span="6" :xs="24">
         <div class="user-profile">
           <el-card style="margin-bottom:20px;">
-            <div v-for="role in roleList" :key="role">
-              <el-button type="text">
-                {{ role.roleName }}
-              </el-button>
-            </div>
-            <el-tree :data="roleList" :props="defaultProps" />
+            <el-tree :data="roleList" :props="defaultProps" @node-click="roleClick" />
+          </el-card>
+        </div>
+      </el-col>
+      <el-col :span="18" :xs="24">
+        <div class="user-profile">
+          <el-card style="margin-bottom:20px;">
+            <el-tree :data="roleMenuList" :props="roleMenuProps" />
           </el-card>
         </div>
       </el-col>
@@ -17,7 +19,8 @@
   </div>
 </template>
 <script>
- import { getRoles } from '@/api/role'
+import { getRoles } from '@/api/role'
+import { getRoleMenus } from '@/api/system/roleMenu'
 
 export default {
   data() {
@@ -29,6 +32,14 @@ export default {
       },
       defaultProps: {
         label: 'roleName'
+      },
+      roleMenuList: null,
+      roleMenuProps: {
+        children: 'children',
+        label: 'menuName'
+      },
+      query: {
+        roleId: 0
       }
     }
   },
@@ -39,6 +50,16 @@ export default {
     getList() {
       getRoles(this.listQuery).then(response => {
         this.roleList = response.data.items
+      })
+    },
+    roleClick(data) {
+      console.log(data)
+      this.getRoleMenus(data)
+    },
+    getRoleMenus(query) {
+      this.query.roleId = query.id
+      getRoleMenus(this.query).then(response => {
+        this.roleMenuList = response.data
       })
     }
   }
