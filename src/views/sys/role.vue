@@ -71,11 +71,9 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <router-link :to="'/system/roleMenu'" style="margin:0 5px 0 5px;">
-            <el-button type="primary" size="mini">
-              分配权限
-            </el-button>
-          </router-link>
+          <el-button type="primary" size="mini" @click="Authorization(row)">
+            分配权限
+          </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
@@ -112,10 +110,25 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="dialogRoleMenuTitle" :visible.sync="dialogRoleMenuVisible" style="margin-top:-100px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
+        <el-tree :data="roleMenuList" default-expand-all show-checkbox :props="roleMenuProps" />
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogRoleMenuVisible = false">
+          关闭
+        </el-button>
+        <el-button type="primary">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
  import { getRoles, saveRole, deleteRole, updateRoleIsUse, updateRoleAdminFlag } from '@/api/role'
+ import { getRoleMenus } from '@/api/system/roleMenu'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -154,7 +167,17 @@ export default {
       rules: {
         roleName: [{ required: true, message: '用户名不可为空.', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      dialogRoleMenuVisible: false,
+      dialogRoleMenuTitle: '角色授权',
+      roleMenuList: null,
+      roleMenuProps: {
+        children: 'children',
+        label: 'menuName'
+      },
+      query: {
+        roleId: 0
+      }
     }
   },
   created() {
@@ -295,6 +318,17 @@ export default {
             })
           })
        })
+    },
+    Authorization(row) {
+        this.query.roleId = row.id
+        this.getRoleMenus()
+        this.dialogRoleMenuVisible = true
+        this.dialogRoleMenuTitle = `<${row.roleName}>角色授权`
+    },
+    getRoleMenus() {
+      getRoleMenus(this.query).then(response => {
+        this.roleMenuList = response.data
+      })
     }
   }
 }

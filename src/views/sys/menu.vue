@@ -20,11 +20,10 @@
       fit
       style="width: 100%;"
       row-key="id"
-      default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="140">
+      <el-table-column label="序号" prop="id" sortable="custom" align="left">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -96,20 +95,30 @@
           <el-input v-model="temp.menuTitle" placeholder="请输入菜单标题" />
         </el-form-item>
         <el-form-item label="上级菜单">
-          <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单" style="width:100%;">
+          <!-- <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单" style="width:100%;">
             <el-option
               v-for="item in options"
               :key="item.id"
               :label="item.menuName"
               :value="item.id"
             />
-          </el-select>
+          </el-select> -->
+          <el-cascader
+            ref="cascader"
+            v-model="temp.parentModuleID"
+            :options="list"
+            :props="{ checkStrictly: true, label: 'menuName', value: 'id',expandTrigger: 'hover'}"
+            clearable
+            filterable
+            style="width:100%;"
+            @change="cascaderChange"
+          />
         </el-form-item>
         <el-form-item label="菜单路径" prop="menuPath">
           <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
         </el-form-item>
         <el-form-item label="菜单排序">
-          <el-input-number v-model="temp.sortIndex" controls-position="right" style="width:100%;" />
+          <el-input-number v-model="temp.sortIndex" controls-position="right" />
         </el-form-item>
         <el-form-item label="禁用状态">
           <el-switch
@@ -253,6 +262,7 @@ export default {
         if (valid) {
           saveMenu(this.temp).then(() => {
             this.getList()
+            this.getAllList()
             this.dialogFormVisible = false
             this.$message({
               message: '操作成功',
@@ -277,6 +287,7 @@ export default {
           const tempData = Object.assign({}, this.temp)
           saveMenu(tempData).then(() => {
             this.getList()
+            this.getAllList()
             this.dialogFormVisible = false
             this.$message({
               message: '操作成功.',
@@ -321,6 +332,7 @@ export default {
        this.$confirm(`你确定删除 ${row.menuName} 吗？`, '提示', {}).then(() => {
           deleteMenu({ ids: arr }).then(() => {
             this.getList()
+            this.getAllList()
             this.dialogFormVisible = false
             this.$message({
               message: '删除成功.',
@@ -328,6 +340,10 @@ export default {
             })
           })
        })
+    },
+    cascaderChange(values) {
+       // 选择之后将下拉界面收起
+      this.$refs.cascader.toggleDropDownVisible()
     }
   }
 }

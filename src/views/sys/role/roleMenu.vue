@@ -11,7 +11,7 @@
       <el-col :span="18" :xs="24">
         <div class="user-profile">
           <el-card style="margin-bottom:20px;">
-            <el-tree :data="roleMenuList" :props="roleMenuProps" />
+            <el-tree :data="roleMenuList" show-checkbox :props="roleMenuProps" />
           </el-card>
         </div>
       </el-col>
