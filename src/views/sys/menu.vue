@@ -95,15 +95,15 @@
           <el-input v-model="temp.menuTitle" placeholder="请输入菜单标题" />
         </el-form-item>
         <el-form-item label="上级菜单">
-          <!-- <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单" style="width:100%;">
+          <el-select v-model="temp.parentModuleID" placeholder="请选择上级菜单" style="width:100%;">
             <el-option
               v-for="item in options"
               :key="item.id"
               :label="item.menuName"
               :value="item.id"
             />
-          </el-select> -->
-          <el-cascader
+          </el-select>
+          <!-- <el-cascader
             ref="cascader"
             v-model="temp.parentModuleID"
             :options="list"
@@ -112,7 +112,7 @@
             filterable
             style="width:100%;"
             @change="cascaderChange"
-          />
+          /> -->
         </el-form-item>
         <el-form-item label="菜单路径" prop="menuPath">
           <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
@@ -143,7 +143,7 @@
         <el-button @click="dialogFormVisible = false">
           关闭
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button type="primary" @click="saveData()">
           确认
         </el-button>
       </div>
@@ -257,9 +257,10 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    createData() {
+    saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.temp.parentModuleID = this.temp.parentModuleID[0]
           saveMenu(this.temp).then(() => {
             this.getList()
             this.getAllList()
@@ -279,23 +280,6 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          saveMenu(tempData).then(() => {
-            this.getList()
-            this.getAllList()
-            this.dialogFormVisible = false
-            this.$message({
-              message: '操作成功.',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
       })
     },
     handleChange(value) {

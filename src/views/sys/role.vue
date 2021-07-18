@@ -112,13 +112,13 @@
 
     <el-dialog :title="dialogRoleMenuTitle" :visible.sync="dialogRoleMenuVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-tree :data="roleMenuList" default-expand-all show-checkbox :props="roleMenuProps" />
+        <el-tree ref="roleMenuTree" node-key="id" :data="roleMenuDto.roleMenuList" :default-checked-keys="roleMenuDto.menuIds" default-expand-all show-checkbox :props="roleMenuProps" />
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRoleMenuVisible = false">
           关闭
         </el-button>
-        <el-button type="primary">
+        <el-button type="primary" @click="saveRoleMenu">
           确认
         </el-button>
       </div>
@@ -128,7 +128,7 @@
 </template>
 <script>
  import { getRoles, saveRole, deleteRole, updateRoleIsUse, updateRoleAdminFlag } from '@/api/role'
- import { getRoleMenus } from '@/api/system/roleMenu'
+ import { getRoleMenus, saveRoleMenus } from '@/api/system/roleMenu'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -170,13 +170,20 @@ export default {
       downloadLoading: false,
       dialogRoleMenuVisible: false,
       dialogRoleMenuTitle: '角色授权',
-      roleMenuList: null,
       roleMenuProps: {
         children: 'children',
         label: 'menuName'
       },
       query: {
         roleId: 0
+      },
+      roleMenus: {
+        Id: 0,
+        menuIds: []
+      },
+      roleMenuDto: {
+        menuIds: [],
+        roleMenuList: null
       }
     }
   },
@@ -321,13 +328,32 @@ export default {
     },
     Authorization(row) {
         this.query.roleId = row.id
+        this.roleMenus.Id = row.id
         this.getRoleMenus()
         this.dialogRoleMenuVisible = true
         this.dialogRoleMenuTitle = `<${row.roleName}>角色授权`
     },
     getRoleMenus() {
       getRoleMenus(this.query).then(response => {
-        this.roleMenuList = response.data
+        this.roleMenuDto.menuIds = response.data.menuIds
+        this.roleMenuDto.roleMenuList = response.data.resultRoleMenuDtos
+      })
+    },
+    saveRoleMenu() {
+      const menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys())
+      if (menuIds.length <= 0) {
+        this.$message({
+          message: '请选择权限菜单.',
+          type: 'error'
+        })
+        return
+      }
+      this.roleMenus.menuIds = menuIds
+      saveRoleMenus(this.roleMenus).then(response => {
+        this.$message({
+          message: '操作成功.',
+          type: 'success'
+        })
       })
     }
   }
