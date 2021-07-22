@@ -86,7 +86,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
         <el-form-item label="角色名" prop="roleName">
-          <el-input v-model="temp.roleName" placeholder="请输入角色名" :disabled="dialogStatus==='create'?false:true" />
+          <el-input v-model="temp.roleName" placeholder="请输入角色名" /> kmkl
         </el-form-item>
         <el-form-item label="管理员">
           <el-switch
@@ -112,7 +112,7 @@
 
     <el-dialog :title="dialogRoleMenuTitle" :visible.sync="dialogRoleMenuVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
-        <el-tree ref="roleMenuTree" node-key="id" :data="roleMenuDto.roleMenuList" :default-checked-keys="roleMenuDto.menuIds" default-expand-all show-checkbox :props="roleMenuProps" />
+        <el-tree ref="roleMenuTree" node-key="id" :data="roleMenuDto.roleMenuList" default-expand-all show-checkbox :props="roleMenuProps" />
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRoleMenuVisible = false">
@@ -335,12 +335,23 @@ export default {
     },
     getRoleMenus() {
       getRoleMenus(this.query).then(response => {
-        this.roleMenuDto.menuIds = response.data.menuIds
         this.roleMenuDto.roleMenuList = response.data.resultRoleMenuDtos
+        this.roleMenuDto.menuIds = response.data.menuIds
+        var that = this
+        this.$nextTick(() => {
+          this.roleMenuDto.menuIds.map(item => {
+            var node = that.$refs.roleMenuTree.getNode(item)
+            console.log(node.isLeaf)
+            if (node.isLeaf) {
+              that.$refs.roleMenuTree.setChecked(node, true)
+            }
+          })
+        })
       })
     },
     saveRoleMenu() {
       const menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys())
+      // const menuIds = this.$refs.roleMenuTree.getCheckedKeys()
       if (menuIds.length <= 0) {
         this.$message({
           message: '请选择权限菜单.',

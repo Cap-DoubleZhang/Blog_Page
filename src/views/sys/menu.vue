@@ -19,15 +19,15 @@
       border
       fit
       style="width: 100%;"
-      row-key="id"
+      row-key="menuCode"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="left">
+      <!-- <el-table-column label="序号" prop="id" sortable="custom" align="left">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="菜单编码" min-width="120px">
         <template slot-scope="{row}">
           <span>{{ row.menuCode }}</span>
@@ -260,7 +260,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.parentModuleID = this.temp.parentModuleID[0]
+          // this.temp.parentModuleID = this.temp.parentModuleID[0]
           saveMenu(this.temp).then(() => {
             this.getList()
             this.getAllList()
