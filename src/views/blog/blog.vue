@@ -27,11 +27,11 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
+      <!-- <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="标题" min-width="120px">
         <template slot-scope="{row}">
           <span>{{ row.title }}</span>
@@ -56,6 +56,7 @@
       </el-table-column>
       <el-table-column label="发布时间" width="160px" align="center">
         <template slot-scope="{row}">
+          <!-- <span>{{ dateFormat(row.profile && \]w.profile.publishTime, "yyyy-MM-dd" ) }}</span> -->
           <span>{{ row.publishTime }}</span>
         </template>
       </el-table-column>
@@ -67,7 +68,7 @@
 
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <router-link :to="'/blog/editBlog/'+row.id">
+          <router-link :to="'/blog/editBlog/'+row.id" style="margin-right:10px;">
             <el-button type="primary" size="mini">
               编辑
             </el-button>
@@ -84,13 +85,12 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <el-dialog :title="commmentListTitle" :visible.sync="dialogCommentFormVisible" style="margin-top:-100px;">
-      <div class="filter-container">
+      <el-row type="flex" justify="end" class="filter-container">
         <el-input v-model="listCommentQuery.keyWord" placeholder="关键词，多个关键词请使用空格分隔" style="width: 300px;" class="filter-item" />
-        &nbsp;
-        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleCommentFilter">
+        <el-button v-waves style="margin-left:10px;" class="filter-item" type="primary" icon="el-icon-search" @click="handleCommentFilter">
           查询
         </el-button>
-      </div>
+      </el-row>
       <el-table
         v-loading="listLoading"
         :data="listComment"

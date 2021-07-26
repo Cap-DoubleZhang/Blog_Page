@@ -21,11 +21,11 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="left" width="140">
+      <!-- <el-table-column label="序号" prop="id" sortable="custom" align="left" width="140">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="字典编码" min-width="100">
         <template slot-scope="{row}">
           <span>{{ row.code }}</span>
@@ -109,18 +109,18 @@
       </el-row>
       <el-table
         :key="tableKey"
-        v-loading="listLoading"
+        v-loading="detailListLoading"
         :data="listDetail"
         border
         fit
         style="width: 100%;"
       >
         <el-table-column type="selection" width="40" align="center" />
-        <el-table-column label="序号" prop="id" sortable="custom" align="left" width="138">
+        <!-- <el-table-column label="序号" prop="id" sortable="custom" align="left" width="138">
           <template slot-scope="{row}">
             <span>{{ row.id }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="明细编码" min-width="100">
           <template slot-scope="{row}">
             <span>{{ row.detailCode }}</span>
@@ -263,7 +263,8 @@ export default {
       options: null,
       keyWord: '',
       detailCode: '',
-      detailListTitle: ''
+      detailListTitle: '',
+      detailListLoading: false
     }
   },
   created() {
@@ -278,19 +279,19 @@ export default {
 
         setTimeout(() => {
           this.listLoading = false
-        }, 1 * 1000)
+        }, 1 * 700)
       })
     },
     getDetailList() {
-      this.listLoading = true
+      this.detailListLoading = true
       this.listDetailQuery.code = this.detailCode
       getDictionariesDetail(this.listDetailQuery).then(response => {
         this.listDetail = response.data.items
         this.totalDetail = response.data.totalCount
 
         setTimeout(() => {
-          this.listLoading = false
-        }, 1 * 1000)
+          this.detailListLoading = false
+        }, 1 * 700)
       })
     },
     handleFilter() {

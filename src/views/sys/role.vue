@@ -21,11 +21,11 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
+      <!-- <el-table-column label="序号" prop="id" sortable="custom" align="center" width="138">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="角色名" min-width="120px">
         <template slot-scope="{row}">
           <span>{{ row.roleName }}</span>
@@ -86,7 +86,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 85%; margin-left:50px;">
         <el-form-item label="角色名" prop="roleName">
-          <el-input v-model="temp.roleName" placeholder="请输入角色名" /> kmkl
+          <el-input v-model="temp.roleName" placeholder="请输入角色名" />
         </el-form-item>
         <el-form-item label="管理员">
           <el-switch

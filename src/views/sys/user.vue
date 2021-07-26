@@ -39,7 +39,7 @@
       style="width: 100%"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column
+      <!-- <el-table-column
         label="序号"
         prop="id"
         sortable="custom"
@@ -49,7 +49,7 @@
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="用户名" min-width="120px">
         <template slot-scope="{ row }">
           <span>{{ row.userLoginName }}</span>
@@ -288,7 +288,6 @@
     >
       <el-table
         ref="userRolesDataList"
-        :key="tableKey"
         v-loading="listLoading"
         :data="userRolesData"
         border
@@ -299,7 +298,7 @@
           width="55"
           align="center"
         />
-        <el-table-column
+        <!-- <el-table-column
           label="序号"
           prop="id"
           sortable="custom"
@@ -309,7 +308,7 @@
           <template slot-scope="{ row }">
             <span>{{ row.id }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="角色名" min-width="120px">
           <template slot-scope="{ row }">
             <span>{{ row.roleName }}</span>
