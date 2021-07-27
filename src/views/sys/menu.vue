@@ -138,6 +138,10 @@
             active-text="按钮"
           />
         </el-form-item>
+        <el-form-item>
+          <el-checkbox v-model="temp.hidden">是否在左侧栏显示</el-checkbox>
+          <el-checkbox v-model="temp.affix">是否在tags-view中可关闭</el-checkbox>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -148,7 +152,6 @@
         </el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 <script>
@@ -190,7 +193,10 @@ export default {
         menuPath: '',
         sortIndex: 0,
         isUse: 0,
-        menuType: 0
+        menuType: 0,
+        hidden: false,
+        affix: false,
+        menuSource: 1
       },
       dialogFormVisible: false,
       dialogStatus: '',
