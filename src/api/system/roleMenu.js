@@ -15,3 +15,11 @@ export function saveRoleMenus(data) {
     data
   })
 }
+
+export function getCurrentUserRoleMenus(query) {
+  return request({
+    url: `menu/currentUserRoleMenus`,
+    method: 'get',
+    params: query
+  })
+}
