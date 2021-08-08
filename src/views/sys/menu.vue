@@ -81,12 +81,15 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px" style="width: 85%; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="85px" style="width: 85%; margin-left:50px;">
         <el-form-item label="菜单编码" prop="menuCode">
           <el-input v-model="temp.menuCode" placeholder="请输入菜单编码" :disabled="dialogStatus==='create'?false:true" />
         </el-form-item>
         <el-form-item label="菜单名称" prop="menuName">
           <el-input v-model="temp.menuName" placeholder="请输入菜单名称" />
+        </el-form-item>
+        <el-form-item label="组件名称" prop="component">
+          <el-input v-model="temp.component" placeholder="请输入组件名称" />
         </el-form-item>
         <el-form-item label="菜单图标">
           <e-icon-picker v-model="temp.menuIcon" />
@@ -117,6 +120,9 @@
         <el-form-item label="菜单路径" prop="menuPath">
           <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
         </el-form-item>
+        <el-form-item label="重定向路径">
+          <el-input v-model="temp.redirect" placeholder="请输入重定向路径" />
+        </el-form-item>
         <el-form-item label="菜单排序">
           <el-input-number v-model="temp.sortIndex" controls-position="right" />
         </el-form-item>
@@ -139,8 +145,10 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-checkbox v-model="temp.hidden">是否在左侧栏显示</el-checkbox>
-          <el-checkbox v-model="temp.affix">是否在tags-view中可关闭</el-checkbox>
+          <el-checkbox v-model="temp.hidden">是否在左侧栏隐藏</el-checkbox>
+          <el-checkbox v-model="temp.affix">是否在tags-view中不可关闭</el-checkbox>
+          <el-checkbox v-model="temp.noCache">是否缓存</el-checkbox>
+          <el-checkbox v-model="temp.alwaysShow">是否总是显示</el-checkbox>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -187,6 +195,7 @@ export default {
         id: 0,
         menuName: '',
         menuCode: '',
+        component: '',
         menuIcon: '',
         menuTitle: '',
         parentModuleID: 0,
@@ -194,9 +203,12 @@ export default {
         sortIndex: 0,
         isUse: 0,
         menuType: 0,
-        hidden: false,
+        hidden: true,
         affix: false,
-        menuSource: 1
+        menuSource: 1,
+        noCache: false,
+        redirect: '',
+        alwaysShow: false
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -209,6 +221,7 @@ export default {
       rules: {
         menuCode: [{ required: true, trigger: 'blur', validator: ValidAlphabets }],
         menuName: [{ required: true, message: '菜单名称不可为空.', trigger: 'blur' }],
+        component: [{ required: true, message: '组件名称不可为空.', trigger: 'blur' }],
         menuPath: [{ required: true, message: '菜单路径不可为空.', trigger: 'blur' }]
       },
       downloadLoading: false,

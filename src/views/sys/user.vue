@@ -347,18 +347,25 @@ export default {
   directives: { waves },
   data() {
     return {
+      // 列表key
       tableKey: 0,
+      // 列表数据
       list: null,
+      // 列表总条数
       total: 0,
+      // 用户列表加载的动画
       listLoading: true,
+      // 查询列表的条件
       listQuery: {
         pageIndex: 1,
         pageSize: 10,
         keyWord: ''
       },
+      // 查询用户的角色列表
       listUserRolesQuery: {
         id: 0
       },
+      // 保存用户的实体类
       temp: {
         id: 0,
         userLoginName: '',
@@ -366,35 +373,41 @@ export default {
         headPortrait: '',
         phone: '',
         eMail: '',
-        birthDate: new Date(),
+        birthDate: '',
         idCard: '',
         qq: '',
         weChat: '',
         descripts: ''
       },
+      // 重置密码实体类
       resetPasswordTemp: {
         id: 0,
         userLoginName: '',
         newPassword: '',
         reNewPassword: ''
       },
+      // 编辑框是否显示
       dialogFormVisible: false,
+      // 重置密码框是否显示
       dialogResetPasswordVisible: false,
       dialogStatus: '',
+      // 弹出编辑框的Title
       textMap: {
         update: '编辑用户',
         create: '创建用户'
       },
-      dialogPvVisible: false,
-      pvData: [],
+      // 编辑用户时的验证规则
       rules: {
+        // 用户登录名
         userLoginName: [
           { required: true, message: '用户名不可为空.', trigger: 'blur' }
         ],
+        // 用户昵称
         userShowName: [
           { required: true, message: '昵称不可为空.', trigger: 'blur' }
         ]
       },
+      // 重置密码时的验证规则
       rulesReset: {
         userLoginName: [
           { required: true, message: '用户名不可为空.', trigger: 'blur' }
@@ -408,12 +421,16 @@ export default {
           { min: 6, message: '不可小于6位字符.', trigger: 'blur' }
         ]
       },
+      // 加载列表的动画
       downloadLoading: false,
+      // 用户角色编辑框是否显示
       dialogUserRoleVisible: false,
+      // 保存用户角色
       userRoles: {
         id: 0,
         roleIds: []
       },
+      // 回显用户角色
       userRolesData: {
         id: 0,
         roleName: '',

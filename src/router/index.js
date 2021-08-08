@@ -3,7 +3,16 @@ import Router from 'vue-router'
 
 // 定义自定义路由的map
 export const componentMap = {
-    'layout': require('@/layout').default
+    'layout': require('@/layout').default,
+    'createBlog': () => import('@/views/blog/createBlog').then(m => m.default),
+    'editBlog': () => import('@/views/blog/editBlog').then(m => m.default),
+    'blog': () => import('@/views/blog/blog').then(m => m.default),
+    'user': () => import('@/views/sys/user').then(m => m.default),
+    'role': () => import('@/views/sys/role').then(m => m.default),
+    'menu': () => import('@/views/sys/menu').then(m => m.default),
+    'dictionary': () => import('@/views/sys/dictionary').then(m => m.default),
+    'waterfallImages': () => import('@/views/sys/waterfallImages').then(m => m.default),
+    'uploadWaterfallImage': () => import('@/views/sys/uploadWaterfallImage').then(m => m.default)
 }
 
 Vue.use(Router)
@@ -39,6 +48,13 @@ export const constantRoutes = [{
                 import ('@/views/dashboard/index'),
             name: 'Dashboard',
             meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+        }, {
+            path: 'userinfo',
+            component: () =>
+                import ('@/views/sys/userinfo'),
+            name: '用户信息',
+            hidden: true,
+            meta: { title: '用户信息', icon: 'el-icon-location-outline' }
         }]
     }
 ]
