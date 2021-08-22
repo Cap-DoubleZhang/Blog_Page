@@ -40,12 +40,12 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="文章类型">
               <blog-type ref="blogType" v-model="postForm.blogType" default-first-option detailcode="BlogType" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="发布时间">
               <el-date-picker
                 v-model="postForm.publishTime"
@@ -55,11 +55,15 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="文章标签">
               <blog-type ref="blogLabel" v-model="postForm.tags" default-first-option detailcode="BlogLabel" />
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-checkbox v-model="postForm.isAllowedComments" label="是否允许评论" />
+            </el-form-item></el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -86,6 +90,7 @@ import Sticky from '@/components/Sticky' // 粘性header组件
 import BlogType from '../../sys/DictionaryComponents/BlogType'
 import { getBlogDetail, saveBlog } from '@/api/blog/blog'
 
+// 文章默认信息
 const defaultForm = {
   publishType: 0, // 发布类型
   title: '', // 文章题目
@@ -95,7 +100,8 @@ const defaultForm = {
   cover: '', // 文章封面
   publishTime: undefined, // 发布时间
   id: undefined, // Id
-  blogType: '' // 文章类型
+  blogType: '', // 文章类型
+  isAllowedComments: true // 文章类型
 }
 
 export default {
@@ -110,12 +116,11 @@ export default {
     return {
       postForm: Object.assign({}, defaultForm),
       loading: false,
-      userListOptions: [],
-      tempRoute: {},
-      DictionaryDetail: null
+      tempRoute: {}
     }
   },
   created() {
+    // 是否为编辑，编辑的话，则获取URL传过来的参数，获取该博客详情
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id
       this.fetchData(id)
@@ -123,22 +128,36 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
+    // 获取博客详情
     fetchData(id) {
       getBlogDetail(id)
         .then((response) => {
+          // 设置文章标签
+          if (response.data.tags) { response.data.tags = response.data.tags.split(',') }
           this.postForm = response.data
-          if (this.postForm.tags) { this.$refs.blogLabel.SetValue(this.postForm.tags.split(',')) }
+          // 文章标签组件赋值
+          this.$refs.blogLabel.SetValue(this.postForm.tags)
+          // 文章类型组件赋值
           this.$refs.blogType.SetValue(this.postForm.blogType)
           // set page title
           this.setPageTitle()
+          // 标题太长，禁用
+          // this.setTagsViewTitle()
         })
         .catch((err) => {
           console.log(err)
         })
     },
+    // 设置页面的标题
     setPageTitle() {
       document.title = `编辑文章 - ${this.postForm.title}`
     },
+    setTagsViewTitle() {
+      document.title = `编辑文章 - ${this.postForm.title}`
+      const route = Object.assign({}, this.tempRoute, { title: `编辑文章 - ${this.postForm.title}` })
+      this.$store.dispatch('tagsView/updateVisitedView', route)
+    },
+    // 保存博客详情
     saveData(publishType) {
       this.$refs['postForm'].validate((valid) => {
         if (valid) {
@@ -155,6 +174,7 @@ export default {
         }
       })
     },
+    // 右侧摘要图片上传
     LayerCoverTxt() {
       this.$prompt('', '请输出图片地址', {
         confirmButtonText: '确定',

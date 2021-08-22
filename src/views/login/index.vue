@@ -137,7 +137,10 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              // 返回用户退出系统前的页面，因为后台动态权限，所以就不这样做了。
+              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ query: this.otherQuery })
+
               this.loading = false
             })
             .catch(() => {

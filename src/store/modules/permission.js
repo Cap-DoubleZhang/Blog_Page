@@ -74,7 +74,7 @@ const actions = {
       }
       return replaceComponent(curr)
     })
-    console.log(myRoutes)
+    // console.log(myRoutes)
     // accessedRoutes
     commit('SET_ROUTES', myRoutes)
     return myRoutes

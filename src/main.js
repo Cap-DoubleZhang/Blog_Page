@@ -26,33 +26,9 @@ import 'e-icon-picker/dist/index.css' // 基本样式，包含基本图标
 import 'font-awesome/css/font-awesome.min.css' // font-awesome 图标库
 import 'element-ui/lib/theme-chalk/icon.css' // element-ui 图标库
 
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
-
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
-})
-
-// 全局删除增加图标
-Vue.use(iconPicker, {
-  FontAwesome: true,
-  ElementUI: true,
-  eIcon: true, // 自带的图标，来自阿里妈妈
-  eIconSymbol: false, // 是否开启彩色图标
-  addIconList: [],
-  removeIconList: [],
-  zIndex: 3100// 选择器弹层的最低层,全局配置
 })
 
 // register global utility filters
@@ -61,7 +37,14 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-Vue.use(iconPicker, { FontAwesome: true, ElementUI: true, eIcon: true, eIconSymbol: true })
+// 全局删除增加图标
+Vue.use(iconPicker, {
+  FontAwesome: true,
+  ElementUI: true,
+  eIcon: true, // 自带的图标，来自阿里妈妈
+  eIconSymbol: false, // 是否开启彩色图标
+  zIndex: 3100// 选择器弹层的最低层,全局配置
+})
 
 new Vue({
   el: '#app',
@@ -69,5 +52,4 @@ new Vue({
   store,
   i18n,
   render: h => h(App)
-
 })

@@ -120,9 +120,9 @@
         <el-form-item label="菜单路径" prop="menuPath">
           <el-input v-model="temp.menuPath" placeholder="请输入菜单路径" />
         </el-form-item>
-        <el-form-item label="重定向路径">
+        <!-- <el-form-item label="重定向路径">
           <el-input v-model="temp.redirect" placeholder="请输入重定向路径" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="菜单排序">
           <el-input-number v-model="temp.sortIndex" controls-position="right" />
         </el-form-item>

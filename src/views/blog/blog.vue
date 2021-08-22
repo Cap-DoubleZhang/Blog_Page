@@ -32,17 +32,17 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="标题" min-width="120px">
+      <el-table-column label="标题">
         <template slot-scope="{row}">
           <span>{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="文章类型" min-width="120px">
+      <el-table-column label="类型" width="50px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.blogType }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布类型" min-width="120px">
+      <el-table-column label="发布类型" width="80px" align="center">
         <template slot-scope="{row}">
           <el-switch
             slot="reference"
@@ -54,7 +54,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" width="160px" align="center">
+      <el-table-column label="发布时间" width="100px" align="center">
         <template slot-scope="{row}">
           <!-- <span>{{ dateFormat(row.profile && \]w.profile.publishTime, "yyyy-MM-dd" ) }}</span> -->
           <span>{{ row.publishTime }}</span>
@@ -122,7 +122,7 @@
   </div>
 </template>
 <script>
- import { getBlogs, saveBlog, deleteBlog, updateBlogPublishType, getBlogComments } from '@/api/blog/blog'
+ import { getBlogs, deleteBlog, updateBlogPublishType, getBlogComments } from '@/api/blog/blog'
  import waves from '@/directive/waves' // waves directive
  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -130,16 +130,6 @@ export default {
   name: 'ComplexTable',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       tableKey: 0,
@@ -164,20 +154,7 @@ export default {
         publishType: 0,
         content: ''
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑博客',
-        create: '创建博客'
-      },
-      dialogPvVisible: false,
-      rules: {
-        title: [{ required: true, message: '标题不可为空.', trigger: 'blur' },
-                { max: 30, message: '标题长度不可大于30位字符.', trigger: 'blur' }],
-        blogType: [{ required: true, message: '文章类型不可为空.', trigger: 'blur' }]
-
-      },
-      downloadLoading: false,
+      commontListLoading: false,
       listComment: null,
       totalComment: 0,
       blogId: 0,
@@ -191,6 +168,13 @@ export default {
       }
     }
   },
+  watch: {
+    // dialogCommentFormVisible(newVal) {
+    //   if (newVal === true) {
+    //     this.getCommentList()
+    //   }
+    // }
+  },
   created() {
     this.getList()
   },
@@ -203,51 +187,23 @@ export default {
 
         setTimeout(() => {
           this.listLoading = false
-        }, 1 * 1000)
+        }, 1 * 500)
       })
     },
     getCommentList() {
-      this.listLoading = true
+      this.commontListLoading = true
       getBlogComments(this.listQuery).then(response => {
         this.listComment = response.data.items
         this.totalComment = response.data.totalCount
 
         setTimeout(() => {
-          this.listLoading = false
-        }, 1 * 1000)
+          this.commontListLoading = false
+        }, 1 * 500)
       })
     },
     handleFilter() {
       this.listQuery.pageIndex = 1
       this.getList()
-    },
-    resetTemp() {
-      this.temp = {
-        id: 0,
-        title: '',
-        blogType: '',
-        publishTime: new Date(),
-        cover: '',
-        synopsis: '',
-        tags: '',
-        publishType: 0,
-        content: ''
-      }
-    },
-    saveData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          saveBlog(this.temp).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              message: '操作成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
     },
     handleCommentShow(row) {
       this.commmentListTitle = `<${row.title}>评论列表`
@@ -261,22 +217,12 @@ export default {
       }
       this.getCommentList()
     },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
     handleDelete(row) {
         const arr = []
         arr.push(row.id)
        this.$confirm(`你确定删除 ${row.title} 吗？`, '提示', {}).then(() => {
           deleteBlog({ ids: arr }).then(() => {
             this.getList()
-            this.dialogFormVisible = false
             this.$message({
               message: '删除成功.',
               type: 'success'

@@ -66,12 +66,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="left" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button type="primary" size="mini" @click="Authorization(row)">
+          <el-button v-if="row.adminFlag!=1" type="primary" size="mini" @click="Authorization(row)">
             分配权限
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
@@ -199,7 +199,7 @@ export default {
 
         setTimeout(() => {
           this.listLoading = false
-        }, 1 * 1000)
+        }, 1 * 500)
       })
     },
     handleFilter() {
@@ -341,7 +341,6 @@ export default {
         this.$nextTick(() => {
           this.roleMenuDto.menuIds.map(item => {
             var node = that.$refs.roleMenuTree.getNode(item)
-            console.log(node.isLeaf)
             if (node.isLeaf) {
               that.$refs.roleMenuTree.setChecked(node, true)
             }
