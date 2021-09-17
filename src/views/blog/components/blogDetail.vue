@@ -25,7 +25,7 @@
                 v-model="postForm.title"
                 type="text"
                 placeholder="请输入标题"
-                maxlength="30"
+                maxlength="80"
                 show-word-limit
               />
             </el-form-item>
