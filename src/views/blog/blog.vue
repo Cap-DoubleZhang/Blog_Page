@@ -57,7 +57,7 @@
       <el-table-column label="发布时间" width="100px" align="center">
         <template slot-scope="{row}">
           <!-- <span>{{ dateFormat(row.profile && \]w.profile.publishTime, "yyyy-MM-dd" ) }}</span> -->
-          <span>{{ row.publishTime }}</span>
+          <span>{{ row.publishTime.split(' ')[0] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="160px" align="center">
@@ -206,7 +206,7 @@ export default {
       this.getList()
     },
     handleCommentShow(row) {
-      this.commmentListTitle = `<${row.title}>评论列表`
+      this.commmentListTitle = `<${row.title}> 评论列表`
       this.dialogCommentFormVisible = true
       this.blogId = row.id
       this.listDetailQuery = {

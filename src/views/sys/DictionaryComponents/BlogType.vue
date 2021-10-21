@@ -51,9 +51,12 @@ export default {
       })
     },
     GetValue() {
-      return this.value
+      const value = this.IsCanMultiple ? this.value.length > 1 ? this.value.join(',') : this.value : this.value
+      return value
     },
     SetValue(Value) {
+      // const arr = Value.split(',')
+      // console.log(arr)
        this.value = Value
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="createPost-container">
-    <el-form ref="postForm" :model="postForm" class="form-container">
+    <el-form ref="FormDetail" :rules="rules" :model="postForm" class="form-container">
       <sticky :z-index="10" :class-name="'sub-navbar'">
         <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="saveData(0)">
           保存为草稿
@@ -13,14 +13,6 @@
         <el-row>
           <el-col :span="24">
             <el-form-item style="margin-bottom: 40px" prop="title" label="标题">
-              <!-- <MDinput
-                v-model="postForm.title"
-                :maxlength="100"
-                name="name"
-                required
-              >
-                标题
-              </MDinput> -->
               <el-input
                 v-model="postForm.title"
                 type="text"
@@ -31,61 +23,93 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-form-item prop="content" style="margin-bottom: 30px">
+            <!-- <Tinymce ref="editor" v-model="postForm.content" placeholder="请输入内容" menubar="true" :height="400" /> -->
+            <MarkdownEditor ref="MarkdownEditor" v-model="postForm.content" placeholder="请输入内容" :height="500" />
+          </el-form-item>
+        </el-row>
+        <el-collapse>
+          <el-collapse-item>
+            <template slot="title">
+              <i class="header-icon el-icon-link" />&nbsp; 高级选项
+            </template>
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="文章类型">
+                  <blog-type ref="blogType" v-model="postForm.blogType" default-first-option detailcode="BlogType" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="发布时间" prop="publishTime">
+                  <el-date-picker
+                    v-model="postForm.publishTime"
+                    type="date"
+                    format="yyyy-MM-dd"
+                    placeholder="请选择发布时间"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="文章标签">
+                  <blog-type ref="blogLabel" v-model="postForm.tags" default-first-option detailcode="BlogLabel" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item>
+                  <el-checkbox v-model="postForm.isAllowedComments" label="是否允许评论" />
+                  <el-checkbox v-model="postForm.isTop" label="是否置顶" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-form-item label="URL Slug (友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符)">
+                <el-input
+                  v-model="postForm.FriendUrl"
+                  type="text"
+                  placeholder="请输入URL Slug"
+                  maxlength="150"
+                  show-word-limit
+                />
+              </el-form-item>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="文章关键词">
+                  <el-input
+                    v-model="postForm.Keyword"
+                    placeholder="请输入关键词"
+                    maxlength="30"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <label class="lbl-title">摘要</label>
+                <el-button type="text" style="margin-left:10px;" @click="LayerCoverTxt">插入摘要右侧图片</el-button>
+                <el-input
+                  v-model="postForm.synopsis"
+                  type="textarea"
+                  :autosize="{ minRows: 3 }"
+                  placeholder="请输入摘要"
+                  maxlength="300"
+                  show-word-limit
+                />
+              </el-col>
+            </el-row>
+          </el-collapse-item>
+        </el-collapse>
 
-        <el-row>
-          <el-col :span="24">
-            <el-form-item prop="content" style="margin-bottom: 30px">
-              <Tinymce ref="editor" v-model="postForm.content" placeholder="请输入内容" menubar="true" :height="400" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="文章类型">
-              <blog-type ref="blogType" v-model="postForm.blogType" default-first-option detailcode="BlogType" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="发布时间">
-              <el-date-picker
-                v-model="postForm.publishTime"
-                type="date"
-                format="yyyy-MM-dd"
-                placeholder="请选择发布时间"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="文章标签">
-              <blog-type ref="blogLabel" v-model="postForm.tags" default-first-option detailcode="BlogLabel" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item>
-              <el-checkbox v-model="postForm.isAllowedComments" label="是否允许评论" />
-            </el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <label class="lbl-title">摘要</label>
-            <el-button type="text" style="margin-left:10px;" @click="LayerCoverTxt">插入摘要右侧图片</el-button>
-            <el-input
-              v-model="postForm.synopsis"
-              type="textarea"
-              :autosize="{ minRows: 3 }"
-              placeholder="请输入摘要"
-              maxlength="300"
-              show-word-limit
-            />
-          </el-col>
-        </el-row>
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import Tinymce from '@/components/Tinymce'
+// import Tinymce from '@/components/Tinymce'
+import MarkdownEditor from '@/components/MarkdownEditor'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import BlogType from '../../sys/DictionaryComponents/BlogType'
 import { getBlogDetail, saveBlog } from '@/api/blog/blog'
@@ -94,18 +118,22 @@ import { getBlogDetail, saveBlog } from '@/api/blog/blog'
 const defaultForm = {
   publishType: 0, // 发布类型
   title: '', // 文章题目
-  content: '', // 文章内容
+  content: '', // 文章内容（Markdown格式）
+  contentHtml: '', // 文章内容（HTML格式）
   synopsis: '', // 文章摘要
   tags: '', // 文章标签
   cover: '', // 文章封面
-  publishTime: undefined, // 发布时间
+  friendUrl: '', // 友好链接URL
+  keyword: '', // 本博客关键词，利于Seo
+  publishTime: new Date(), // 发布时间
   id: undefined, // Id
   blogType: '', // 文章类型
-  isAllowedComments: true // 文章类型
+  isAllowedComments: true, // 是否允许评论
+  isTop: false // 是否置顶
 }
 
 export default {
-  components: { Tinymce, Sticky, BlogType },
+  components: { Sticky, BlogType, MarkdownEditor },
   props: {
     isEdit: {
       type: Boolean,
@@ -116,7 +144,12 @@ export default {
     return {
       postForm: Object.assign({}, defaultForm),
       loading: false,
-      tempRoute: {}
+      tempRoute: {},
+      rules: {
+        title: [{ required: true, message: '标题不可为空.', trigger: 'blur' }],
+        content: [{ required: true, message: '内容不可为空.', trigger: 'blur' }],
+        publishTime: [{ required: true, message: '请选择发布时间.', trigger: 'blur' }]
+      }
     }
   },
   created() {
@@ -159,11 +192,12 @@ export default {
     },
     // 保存博客详情
     saveData(publishType) {
-      this.$refs['postForm'].validate((valid) => {
+      this.$refs['FormDetail'].validate((valid) => {
         if (valid) {
           this.postForm.blogType = this.$refs.blogType.GetValue()
           this.postForm.publishType = publishType
-          this.postForm.tags = this.$refs.blogLabel.GetValue().length <= 0 ? '' : this.$refs.blogLabel.GetValue().join(',')
+          this.postForm.contentHtml = this.$refs.MarkdownEditor.getHtml()
+          this.postForm.tags = this.$refs.blogLabel.GetValue()
           saveBlog(this.postForm).then(() => {
             this.$notify({
               message: '操作成功',
