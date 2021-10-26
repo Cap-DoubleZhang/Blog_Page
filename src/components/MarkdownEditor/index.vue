@@ -46,7 +46,7 @@ export default {
     language: {
       type: String,
       required: false,
-      default: 'en_US' // https://github.com/nhnent/tui.editor/tree/master/src/js/langs
+      default: 'en_zh' // https://github.com/nhnent/tui.editor/tree/master/src/js/langs
     }
   },
   data() {
@@ -97,6 +97,15 @@ export default {
       }
       this.editor.on('change', () => {
         this.$emit('input', this.editor.getMarkdown())
+      })
+      this.editor.addHook('addImageBlobHook', (file, cb) => {
+        if (typeof this.$listeners.uploadImageEvent === 'function') {
+          this.$emit('uploadImageEvent', file, cb)
+        } else {
+          const reader = new FileReader()
+          reader.onload = ({ target }) => { cb(target.result || '') }
+          reader.readAsDataURL(file)
+        }
       })
     },
     destroyEditor() {

@@ -26,7 +26,7 @@
         <el-row>
           <el-form-item prop="content" style="margin-bottom: 30px">
             <!-- <Tinymce ref="editor" v-model="postForm.content" placeholder="请输入内容" menubar="true" :height="400" /> -->
-            <MarkdownEditor ref="MarkdownEditor" v-model="postForm.content" placeholder="请输入内容" :height="500" />
+            <MarkdownEditor ref="MarkdownEditor" v-model="postForm.content" placeholder="请输入内容" :height="500" @uploadImageEvent="uploadImage" />
           </el-form-item>
         </el-row>
         <el-collapse>
@@ -113,6 +113,7 @@ import MarkdownEditor from '@/components/MarkdownEditor'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import BlogType from '../../sys/DictionaryComponents/BlogType'
 import { getBlogDetail, saveBlog } from '@/api/blog/blog'
+import { saveImage } from '@/api/system/img'
 
 // 文章默认信息
 const defaultForm = {
@@ -217,6 +218,17 @@ export default {
           this.postForm.cover = value
           console.log(this.postForm.cover)
       })
+    },
+    uploadImage(file, callback) {
+      var fd = new FormData()
+      fd.append('file', file, file.name) // 添加到请求体
+      saveImage(fd).then(() => {
+            this.$notify({
+              message: '操作成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
     }
   }
 }
