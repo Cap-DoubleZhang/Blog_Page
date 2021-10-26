@@ -220,7 +220,7 @@ export default {
     handleDelete(row) {
         const arr = []
         arr.push(row.id)
-       this.$confirm(`你确定删除 ${row.title} 吗？`, '提示', {}).then(() => {
+       this.$confirm(`你确定删除 <${row.title}> 吗？`, '提示', {}).then(() => {
           deleteBlog({ ids: arr }).then(() => {
             this.getList()
             this.$message({
@@ -233,10 +233,10 @@ export default {
     updateBlogPublishType($event, row) {
       let messgae = ''
       if ($event === 1) {
-        messgae = `你确定发布 ${row.title} 吗？`
+        messgae = `你确定发布 <${row.title}> 吗？`
         row.publishType = 0
       } else if ($event === 0) {
-        messgae = `你确定保存 ${row.title} 为草稿吗？`
+        messgae = `你确定保存 <${row.title}> 为草稿吗？`
         row.publishType = 1
       }
       const arr = []

@@ -78,7 +78,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" />
+    <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getList" /> -->
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" style="margin-top:-100px;">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="85px" style="width: 85%; margin-left:50px;">
@@ -165,12 +165,12 @@
 <script>
  import { getMenus, saveMenu, deleteMenu, updateMenuIsUse, getAllMenus } from '@/api/menu'
  import waves from '@/directive/waves' // waves directive
- import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+//  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
  import { validAlphabets } from '@/utils/validate'
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  // components: { Pagination },
   directives: { waves },
   data() {
     const ValidAlphabets = (rule, value, callback) => {
