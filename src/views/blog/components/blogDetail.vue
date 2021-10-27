@@ -161,6 +161,16 @@ export default {
     }
     this.tempRoute = Object.assign({}, this.$route)
   },
+  mounted() {
+    document.onkeydown = (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            //  执行save方法
+            this.saveData(1)
+            // 阻止默认事件
+            e.preventDefault()
+        }
+    }
+  },
   methods: {
     // 获取博客详情
     fetchData(id) {
@@ -222,13 +232,17 @@ export default {
     uploadImage(file, callback) {
       var fd = new FormData()
       fd.append('file', file, file.name) // 添加到请求体
-      saveImage(fd).then(() => {
-            this.$notify({
-              message: '操作成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
+      saveImage(fd).then(result => {
+        this.$notify({
+          message: '操作成功',
+          type: 'success',
+          duration: 2000
+        })
+        callback(result.data, '图片')
+      })
+      // const reader = new FileReader()
+      // reader.onload = ({ target }) => { callback(target.result || '') }
+      // reader.readAsDataURL(file)
     }
   }
 }
