@@ -136,6 +136,7 @@ const defaultForm = {
 export default {
   components: { Sticky, BlogType, MarkdownEditor },
   props: {
+    // 是否可编辑
     isEdit: {
       type: Boolean,
       default: false
@@ -146,6 +147,7 @@ export default {
       postForm: Object.assign({}, defaultForm),
       loading: false,
       tempRoute: {},
+      // 验证数据可用性
       rules: {
         title: [{ required: true, message: '标题不可为空.', trigger: 'blur' }],
         content: [{ required: true, message: '内容不可为空.', trigger: 'blur' }],
@@ -196,25 +198,36 @@ export default {
     setPageTitle() {
       document.title = `编辑文章 - ${this.postForm.title}`
     },
+    // 设置tag标题
     setTagsViewTitle() {
       document.title = `编辑文章 - ${this.postForm.title}`
-      const route = Object.assign({}, this.tempRoute, { title: `编辑文章 - ${this.postForm.title}` })
-      this.$store.dispatch('tagsView/updateVisitedView', route)
+      // const route = Object.assign({}, this.tempRoute, { title: `编辑文章 - ${this.postForm.title}` })
+      // this.$store.dispatch('tagsView/updateVisitedView', route)
     },
     // 保存博客详情
     saveData(publishType) {
       this.$refs['FormDetail'].validate((valid) => {
         if (valid) {
+          // 获取博客类型
           this.postForm.blogType = this.$refs.blogType.GetValue()
+          // 博客是否发布
           this.postForm.publishType = publishType
+          // 获取Markdown的HTML编码
           this.postForm.contentHtml = this.$refs.MarkdownEditor.getHtml()
+          // 获取博客标签
           this.postForm.tags = this.$refs.blogLabel.GetValue()
-          saveBlog(this.postForm).then(() => {
+          // 访问保存接口
+          saveBlog(this.postForm).then(result => {
+            // 提示
             this.$notify({
               message: '操作成功',
               type: 'success',
               duration: 2000
             })
+            // 新增时跳转编辑页面
+            if (!this.isEdit) {
+              this.$router.push(`/blog/editblog/${result.data}`)
+            }
           })
         }
       })

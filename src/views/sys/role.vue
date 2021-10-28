@@ -290,6 +290,13 @@ export default {
     handleDelete(row) {
         const arr = []
         arr.push(row.id)
+        if (this.list.length <= 1) {
+          this.$message({
+              message: '不可再删除.',
+              type: 'error'
+            })
+          return
+        }
        this.$confirm(`你确定删除 ${row.roleName} 吗？`, '提示', {}).then(() => {
           deleteRole({ ids: arr }).then(() => {
             this.getList()

@@ -114,22 +114,12 @@
       <el-table-column
         label="操作"
         align="center"
-        width="310"
+        width="230"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
-          </el-button>
-          <el-button type="primary" size="mini" @click="assignRoles(row)">
-            分配角色
-          </el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleResetPassword(row)"
-          >
-            重置密码
           </el-button>
           <el-button
             v-if="row.status != 'deleted'"
@@ -139,6 +129,15 @@
           >
             删除
           </el-button>
+          <el-dropdown class="el-button--mini" @command="handleMore">
+            <el-button type="primary" size="mini">
+              更多<i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="{type:'assignRoles',params:row}">分配角色</el-dropdown-item>
+              <el-dropdown-item :command="{type:'handleResetPassword',params:row}">重置密码</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -558,6 +557,13 @@ export default {
       })
     },
     handleDelete(row) {
+      if (this.list.length <= 1) {
+          this.$message({
+              message: '不可再删除.',
+              type: 'error'
+            })
+          return
+        }
       const arr = []
       arr.push(row.id)
       this.$confirm(`你确定删除 ${row.userLoginName} 吗？`, '提示', {}).then(
@@ -656,6 +662,16 @@ export default {
               this.$refs.userRolesDataList.toggleRowSelection(row, true)
         }
       })
+    },
+    handleMore(command) {
+      switch (command.type) {
+        case 'handleResetPassword':
+          this.handleResetPassword(command.params)
+          break
+        case 'assignRoles':
+          this.assignRoles(command.params)
+          break
+      }
     }
   }
 }
