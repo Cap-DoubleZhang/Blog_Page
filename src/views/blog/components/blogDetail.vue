@@ -93,7 +93,7 @@
             </el-row>
             <el-row>
               <el-form-item
-                label="URL Slug (友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符)"
+                label="URL Slug (友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符，请勿使用全数字)"
               >
                 <el-input
                   v-model="postForm.FriendUrl"
