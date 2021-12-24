@@ -1,8 +1,18 @@
 <template>
   <div class="createPost-container">
-    <el-form ref="FormDetail" :rules="rules" :model="postForm" class="form-container">
+    <el-form
+      ref="FormDetail"
+      :rules="rules"
+      :model="postForm"
+      class="form-container"
+    >
       <sticky :z-index="10" :class-name="'sub-navbar'">
-        <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="saveData(0)">
+        <el-button
+          v-loading="loading"
+          style="margin-left: 10px"
+          type="success"
+          @click="saveData(0)"
+        >
           保存为草稿
         </el-button>
         <el-button v-loading="loading" type="warning" @click="saveData(1)">
@@ -26,7 +36,13 @@
         <el-row>
           <el-form-item prop="content" style="margin-bottom: 30px">
             <!-- <Tinymce ref="editor" v-model="postForm.content" placeholder="请输入内容" menubar="true" :height="400" /> -->
-            <MarkdownEditor ref="MarkdownEditor" v-model="postForm.content" placeholder="请输入内容" :height="500" @uploadImageEvent="uploadImage" />
+            <MarkdownEditor
+              ref="MarkdownEditor"
+              v-model="postForm.content"
+              placeholder="请输入内容"
+              :height="500"
+              @uploadImageEvent="uploadImage"
+            />
           </el-form-item>
         </el-row>
         <el-collapse>
@@ -37,7 +53,12 @@
             <el-row>
               <el-col :span="6">
                 <el-form-item label="文章类型">
-                  <blog-type ref="blogType" v-model="postForm.blogType" default-first-option detailcode="BlogType" />
+                  <blog-type
+                    ref="blogType"
+                    v-model="postForm.blogType"
+                    default-first-option
+                    detailcode="BlogType"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -52,18 +73,28 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item label="文章标签">
-                  <blog-type ref="blogLabel" v-model="postForm.tags" default-first-option detailcode="BlogLabel" />
+                  <blog-type
+                    ref="blogLabel"
+                    v-model="postForm.tags"
+                    default-first-option
+                    detailcode="BlogLabel"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item>
-                  <el-checkbox v-model="postForm.isAllowedComments" label="是否允许评论" />
+                  <el-checkbox
+                    v-model="postForm.isAllowedComments"
+                    label="是否允许评论"
+                  />
                   <el-checkbox v-model="postForm.isTop" label="是否置顶" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-form-item label="URL Slug (友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符)">
+              <el-form-item
+                label="URL Slug (友好地址名，只能使用字母、数字、-连字符、_下划线，不超过150个字符)"
+              >
                 <el-input
                   v-model="postForm.FriendUrl"
                   type="text"
@@ -88,7 +119,11 @@
             <el-row>
               <el-col :span="24">
                 <label class="lbl-title">摘要</label>
-                <el-button type="text" style="margin-left:10px;" @click="LayerCoverTxt">插入摘要右侧图片</el-button>
+                <el-button
+                  type="text"
+                  style="margin-left: 10px"
+                  @click="LayerCoverTxt"
+                >插入摘要右侧图片</el-button>
                 <el-input
                   v-model="postForm.synopsis"
                   type="textarea"
@@ -101,7 +136,6 @@
             </el-row>
           </el-collapse-item>
         </el-collapse>
-
       </div>
     </el-form>
   </div>
@@ -150,8 +184,12 @@ export default {
       // 验证数据可用性
       rules: {
         title: [{ required: true, message: '标题不可为空.', trigger: 'blur' }],
-        content: [{ required: true, message: '内容不可为空.', trigger: 'blur' }],
-        publishTime: [{ required: true, message: '请选择发布时间.', trigger: 'blur' }]
+        content: [
+          { required: true, message: '内容不可为空.', trigger: 'blur' }
+        ],
+        publishTime: [
+          { required: true, message: '请选择发布时间.', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -165,12 +203,12 @@ export default {
   },
   mounted() {
     document.onkeydown = (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            //  执行save方法
-            this.saveData(1)
-            // 阻止默认事件
-            e.preventDefault()
-        }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        //  执行save方法
+        this.saveData(1)
+        // 阻止默认事件
+        e.preventDefault()
+      }
     }
   },
   methods: {
@@ -179,7 +217,9 @@ export default {
       getBlogDetail(id)
         .then((response) => {
           // 设置文章标签
-          if (response.data.tags) { response.data.tags = response.data.tags.split(',') }
+          if (response.data.tags) {
+            response.data.tags = response.data.tags.split(',')
+          }
           this.postForm = response.data
           // 文章标签组件赋值
           this.$refs.blogLabel.SetValue(this.postForm.tags)
@@ -217,7 +257,7 @@ export default {
           // 获取博客标签
           this.postForm.tags = this.$refs.blogLabel.GetValue()
           // 访问保存接口
-          saveBlog(this.postForm).then(result => {
+          saveBlog(this.postForm).then((result) => {
             // 提示
             this.$notify({
               message: '操作成功',
@@ -236,26 +276,26 @@ export default {
     LayerCoverTxt() {
       this.$prompt('', '请输出图片地址', {
         confirmButtonText: '确定',
-          cancelButtonText: '取消'
+        cancelButtonText: '取消'
       }).then(({ value }) => {
-          this.postForm.cover = value
-          console.log(this.postForm.cover)
+        this.postForm.cover = value
+        console.log(this.postForm.cover)
       })
     },
     uploadImage(file, callback) {
       var fd = new FormData()
-      fd.append('file', file, file.name) // 添加到请求体
-      saveImage(fd).then(result => {
+      fd.append('files', file, file.name) // 添加到请求体
+      fd.append('filePathName', 'blog')
+      saveImage(fd).then((result) => {
         this.$notify({
           message: '操作成功',
           type: 'success',
           duration: 2000
         })
-        callback(result.data, '图片')
+        result.data.map((item) => {
+          callback(item, '图片')
+        })
       })
-      // const reader = new FileReader()
-      // reader.onload = ({ target }) => { callback(target.result || '') }
-      // reader.readAsDataURL(file)
     }
   }
 }
