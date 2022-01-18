@@ -7,3 +7,11 @@ export function saveImage(data) {
     data
   })
 }
+
+export function deleteImages(query) {
+  return request({
+    url: `https://images.doublezh.com/api/file/files`,
+    method: 'delete',
+    params: query
+  })
+}

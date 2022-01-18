@@ -7,3 +7,12 @@ export function getWaterfallImages(query) {
       params: query
     })
 }
+
+export function getFiles(query) {
+  return request({
+    url: `file/files`,
+    method: 'get',
+    params: query
+  })
+}
+

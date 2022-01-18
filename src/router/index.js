@@ -13,7 +13,8 @@ export const componentMap = {
     'dictionary': () => import('@/views/sys/dictionary').then(m => m.default),
     'waterfallImages': () => import('@/views/sys/waterfallImages').then(m => m.default),
     'uploadWaterfallImage': () => import('@/views/sys/uploadWaterfallImage').then(m => m.default),
-    'links': () => import('@/views/link/index').then(m => m.default)
+    'links': () => import('@/views/link/index').then(m => m.default),
+    'files': () => import('@/views/sys/file').then(m => m.default)
 }
 
 Vue.use(Router)
